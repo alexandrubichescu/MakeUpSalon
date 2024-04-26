@@ -50,5 +50,4 @@ public class AuthUser {
 
         return ResponseEntity.ok(user);
     }
-
 }
