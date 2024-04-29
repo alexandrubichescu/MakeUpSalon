@@ -2,12 +2,17 @@ package ubb.proiect.MakeupSalon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Data
+@Builder
 @Table(name="treatments")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Treatment {

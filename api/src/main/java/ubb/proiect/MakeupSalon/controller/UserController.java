@@ -1,5 +1,12 @@
 package ubb.proiect.MakeupSalon.controller;
 
+import ubb.proiect.MakeupSalon.converter.AppointmentConverter;
+import ubb.proiect.MakeupSalon.converter.TreatmentConverter;
+import ubb.proiect.MakeupSalon.converter.UserConverter;
+import ubb.proiect.MakeupSalon.dto.AppointmentDto;
+import ubb.proiect.MakeupSalon.dto.IntervalDto;
+import ubb.proiect.MakeupSalon.dto.TreatmentDto;
+import ubb.proiect.MakeupSalon.dto.UserDto;
 import ubb.proiect.MakeupSalon.exception.UserNotFoundException;
 import ubb.proiect.MakeupSalon.model.*;
 import ubb.proiect.MakeupSalon.service.IUserService;
@@ -18,23 +25,44 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    public UserController(IUserService userService) {
+    @Autowired
+    private UserConverter userConverter;
+
+    @Autowired
+    private TreatmentConverter treatmentConverter;
+
+    @Autowired
+    private AppointmentConverter appointmentConverter;
+
+
+    public UserController(IUserService userService,
+                          UserConverter userConverter,
+                          TreatmentConverter treatmentConverter) {
         this.userService = userService;
+        this.userConverter = userConverter;
+        this.treatmentConverter = treatmentConverter;
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return users.stream()
+                .map(userConverter::convertModelToDto)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
+    @GetMapping("/users/id/{id}")
+    public UserDto getUserById(@PathVariable int id) {
+        User user = userService.getUserById(id);
+        return userConverter.convertModelToDto(user);
     }
 
-    @GetMapping("/users/{id}/treatments")
-    public Set<Treatment> getTreatmentsByUserId(@PathVariable int id) {
-        return userService.getTreatmentsByUserId(id);
+    @GetMapping("/users/id/{id}/treatments")
+    public Set<TreatmentDto> getTreatmentsByUserId(@PathVariable int id) {
+        Set<Treatment> treatments = userService.getTreatmentsByUserId(id);
+        return treatments.stream()
+                .map(treatmentConverter::convertModelToDto)
+                .collect(Collectors.toSet());
     }
 
     @GetMapping("/users/{email}")
@@ -45,54 +73,58 @@ public class UserController {
     }
 
     @GetMapping("/users/role/{role}")
-    public List<User> getUsersByRole(@PathVariable Role role) {
-        return userService.getUsersByRole(role);
+    public List<UserDto> getUsersByRole(@PathVariable Role role) {
+        List<User> users = userService.getUsersByRole(role);
+        return users.stream()
+                .map(userConverter::convertModelToDto)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/users/{id}/unavailable")
-    public List<Interval> getUnavaliableTimes(@PathVariable int id) {
+    @GetMapping("/users/id/{id}/unavailable")
+    public List<IntervalDto> getUnavailableTimes(@PathVariable int id) {
         User employee = userService.getUserById(id);
         Set<Appointment> appointments = employee.getEmployeeAppointments();
 
         return appointments.stream()
-                .map(appointment -> new Interval(appointment.getStartDateTime(), appointment.getEndDateTime()))
+                .map(appointment -> new IntervalDto(appointment.getStartDateTime(), appointment.getEndDateTime()))
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/users/{id}/appointments")
-    public Set<Appointment> getAppointmentsByUserId(@PathVariable int id) {
+    @GetMapping("/users/id/{id}/appointments")
+    public Set<AppointmentDto> getAppointmentsByUserId(@PathVariable int id) {
         User customer = userService.getUserById(id);
-        return customer.getCustomerAppointments();
+        Set<Appointment> appointments = customer.getEmployeeAppointments();
+        return appointments.stream()
+                .map(appointmentConverter::convertModelToDto)
+                .collect(Collectors.toSet());
     }
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
+    public UserDto createUser(@RequestBody UserDto userDto) {
+        User user = userConverter.convertDtoToModel(userDto);
         user.setRole(Role.CUSTOMER);
-        return userService.saveUser(user);
+        User createdUser = userService.saveUser(user);
+        return userConverter.convertModelToDto(createdUser);
     }
 
-    @PutMapping("/users/{email}")
-    public User updateUser(@PathVariable String email, @RequestBody User user) {
-        Optional<User> checkUser = userService.getUserByEmail(email);
-        if (checkUser.isEmpty()) {
-            throw new UserNotFoundException("User with email " + email + " not found");
-        } else {
-            User updatedUser = checkUser.get();
-            updatedUser.setFirstName(user.getFirstName());
-            updatedUser.setLastName(user.getLastName());
-            updatedUser.setEmail(user.getEmail());
-            updatedUser.setPassword(user.getPassword());
-            updatedUser.setPhoneNumber(user.getPhoneNumber());
-            updatedUser.setDateOfBirth(user.getDateOfBirth());
-            updatedUser.setAddress(user.getAddress());
-            updatedUser.setRole(user.getRole());
-            updatedUser.setPictureURL(user.getPictureURL());
-            updatedUser.setEmployeeTreatments(user.getEmployeeTreatments());
-            updatedUser.setCustomerAppointments(user.getCustomerAppointments());
-            updatedUser.setEmployeeAppointments(user.getEmployeeAppointments());
-            userService.updateUser(updatedUser);
-            return updatedUser;
-        }
+    @PutMapping("/users/{id}")
+    public UserDto updateUser(@PathVariable int id, @RequestBody UserDto userDto) {
+        User updatedUser = userService.getUserById(id);
+
+        updatedUser.setFirstName(userDto.getFirstName());
+        updatedUser.setLastName(userDto.getLastName());
+        updatedUser.setEmail(userDto.getEmail());
+        updatedUser.setPassword(userDto.getPassword());
+        updatedUser.setPhoneNumber(userDto.getPhoneNumber());
+        updatedUser.setDateOfBirth(userDto.getDateOfBirth());
+        updatedUser.setAddress(userDto.getAddress());
+        updatedUser.setRole(userDto.getRole());
+        updatedUser.setPictureURL(userDto.getPictureURL());
+        updatedUser.setEmployeeTreatments(userDto.getEmployeeTreatments());
+        updatedUser.setCustomerAppointments(userDto.getCustomerAppointments());
+        updatedUser.setEmployeeAppointments(userDto.getEmployeeAppointments());
+        userService.updateUser(updatedUser);
+        return userConverter.convertModelToDto(updatedUser);
     }
 
     @DeleteMapping("/users/{id}")

@@ -1,14 +1,19 @@
 package ubb.proiect.MakeupSalon.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Data
+@Builder
 @Table(name = "appointments")
 public class Appointment {
 
