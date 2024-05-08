@@ -26,7 +26,7 @@ public class UserServiceImpl implements IUserService {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             log.error("getAllUsers() --- users list is empty");
-            throw new ResourceNotFoundException("User not found");
+            throw new ResourceNotFoundException("Users not found");
         }
         log.trace("getAllUsers(): usersSize={}", users.size());
         return users;

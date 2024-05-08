@@ -57,7 +57,7 @@ public class AppointmentController {
 
             return ResponseEntity.ok(savedAppointmentDto);
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 

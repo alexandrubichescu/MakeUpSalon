@@ -73,7 +73,7 @@ public class TreatmentController {
             TreatmentDto savedTreatmentDto = treatmentConverter.convertModelToDto(savedTreatment);
             return ResponseEntity.ok(savedTreatmentDto);
         } catch (DataBaseOperationException e){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
