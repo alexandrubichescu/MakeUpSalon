@@ -11,8 +11,7 @@ import ubb.proiect.MakeupSalon.model.User;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,10 +23,10 @@ public class AppointmentDto implements Serializable {
     private User customer;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    private Date dateCreated;
+    private LocalDateTime dateCreated;
     private Status approvalStatus;
     private User employee;
-    private Set<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
+    private List<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
 
     @Override
     public String toString() {

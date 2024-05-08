@@ -1,10 +1,14 @@
 package ubb.proiect.MakeupSalon.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "employee_treatments")
 public class EmployeeTreatment {
     @Id

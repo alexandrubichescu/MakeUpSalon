@@ -1,5 +1,7 @@
 package ubb.proiect.MakeupSalon.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ubb.proiect.MakeupSalon.converter.AppointmentConverter;
 import ubb.proiect.MakeupSalon.converter.TreatmentConverter;
 import ubb.proiect.MakeupSalon.converter.UserConverter;
@@ -7,6 +9,8 @@ import ubb.proiect.MakeupSalon.dto.AppointmentDto;
 import ubb.proiect.MakeupSalon.dto.IntervalDto;
 import ubb.proiect.MakeupSalon.dto.TreatmentDto;
 import ubb.proiect.MakeupSalon.dto.UserDto;
+import ubb.proiect.MakeupSalon.exception.DataBaseOperationException;
+import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.exception.UserNotFoundException;
 import ubb.proiect.MakeupSalon.model.*;
 import ubb.proiect.MakeupSalon.service.IUserService;
@@ -35,34 +39,41 @@ public class UserController {
     private AppointmentConverter appointmentConverter;
 
 
-    public UserController(IUserService userService,
-                          UserConverter userConverter,
-                          TreatmentConverter treatmentConverter) {
-        this.userService = userService;
-        this.userConverter = userConverter;
-        this.treatmentConverter = treatmentConverter;
-    }
-
     @GetMapping("/users")
-    public List<UserDto> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return users.stream()
-                .map(userConverter::convertModelToDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            List<UserDto> usersDto = users.stream()
+                    .map(user -> userConverter.convertModelToDto(user))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(usersDto);
+        } catch (ResourceNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/users/id/{id}")
-    public UserDto getUserById(@PathVariable int id) {
-        User user = userService.getUserById(id);
-        return userConverter.convertModelToDto(user);
+    public ResponseEntity<UserDto> getUserById(@PathVariable int id) {
+        try {
+            User user = userService.getUserById(id);
+            UserDto userDto = userConverter.convertModelToDto(user);
+            return ResponseEntity.ok(userDto);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/users/id/{id}/treatments")
-    public Set<TreatmentDto> getTreatmentsByUserId(@PathVariable int id) {
-        Set<Treatment> treatments = userService.getTreatmentsByUserId(id);
-        return treatments.stream()
-                .map(treatmentConverter::convertModelToDto)
-                .collect(Collectors.toSet());
+    public ResponseEntity<Set<TreatmentDto>> getTreatmentsByUserId(@PathVariable int id) {
+        try {
+            Set<Treatment> treatments = userService.getTreatmentsByUserId(id);
+            Set<TreatmentDto> treatmentDtos = treatments.stream()
+                    .map(treatmentConverter::convertModelToDto)
+                    .collect(Collectors.toSet());
+            return ResponseEntity.ok(treatmentDtos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/users/{email}")
@@ -73,62 +84,79 @@ public class UserController {
     }
 
     @GetMapping("/users/role/{role}")
-    public List<UserDto> getUsersByRole(@PathVariable Role role) {
-        List<User> users = userService.getUsersByRole(role);
-        return users.stream()
-                .map(userConverter::convertModelToDto)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UserDto>> getUsersByRole(@PathVariable Role role) {
+        try {
+            List<User> users = userService.getUsersByRole(role);
+            List<UserDto> userDtos = users.stream()
+                    .map(user -> userConverter.convertModelToDto(user))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(userDtos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @GetMapping("/users/id/{id}/unavailable")
-    public List<IntervalDto> getUnavailableTimes(@PathVariable int id) {
-        User employee = userService.getUserById(id);
-        Set<Appointment> appointments = employee.getEmployeeAppointments();
-
-        return appointments.stream()
-                .map(appointment -> new IntervalDto(appointment.getStartDateTime(), appointment.getEndDateTime()))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<IntervalDto>> getUnavailableTimes(@PathVariable int id) {
+        try {
+            User employee = userService.getUserById(id);
+            Set<Appointment> appointments = employee.getEmployeeAppointments();
+            List<IntervalDto> intervalDtos = appointments.stream()
+                    .map(appointment -> new IntervalDto(appointment.getStartDateTime(), appointment.getEndDateTime()))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(intervalDtos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/users/id/{id}/appointments")
-    public Set<AppointmentDto> getAppointmentsByUserId(@PathVariable int id) {
-        User customer = userService.getUserById(id);
-        Set<Appointment> appointments = customer.getEmployeeAppointments();
-        return appointments.stream()
-                .map(appointmentConverter::convertModelToDto)
-                .collect(Collectors.toSet());
+    public ResponseEntity<Set<AppointmentDto>> getAppointmentsByUserId(@PathVariable int id) {
+        try {
+            User customer = userService.getUserById(id);
+            Set<Appointment> appointments = customer.getEmployeeAppointments();
+            Set<AppointmentDto> appointmentDtos = appointments.stream()
+                    .map(appointmentConverter::convertModelToDto)
+                    .collect(Collectors.toSet());
+            return ResponseEntity.ok(appointmentDtos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/users")
-    public UserDto createUser(@RequestBody UserDto userDto) {
-        User user = userConverter.convertDtoToModel(userDto);
-        user.setRole(Role.CUSTOMER);
-        User createdUser = userService.saveUser(user);
-        return userConverter.convertModelToDto(createdUser);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        try {
+            User user = userConverter.convertDtoToModel(userDto);
+            user.setRole(Role.CUSTOMER); // setting the default role
+            User createdUser = userService.saveUser(user);
+            UserDto userDtoCreated = userConverter.convertModelToDto(createdUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDtoCreated);
+        } catch (DataBaseOperationException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/users/{id}")
-    public UserDto updateUser(@PathVariable int id, @RequestBody UserDto userDto) {
-        User updatedUser = userService.getUserById(id);
-
-        updatedUser.setFirstName(userDto.getFirstName());
-        updatedUser.setLastName(userDto.getLastName());
-        updatedUser.setEmail(userDto.getEmail());
-        updatedUser.setPassword(userDto.getPassword());
-        updatedUser.setPhoneNumber(userDto.getPhoneNumber());
-        updatedUser.setDateOfBirth(userDto.getDateOfBirth());
-        updatedUser.setAddress(userDto.getAddress());
-        updatedUser.setRole(userDto.getRole());
-        updatedUser.setPictureURL(userDto.getPictureURL());
-        updatedUser.setEmployeeTreatments(userDto.getEmployeeTreatments());
-        updatedUser.setCustomerAppointments(userDto.getCustomerAppointments());
-        updatedUser.setEmployeeAppointments(userDto.getEmployeeAppointments());
-        userService.updateUser(updatedUser);
-        return userConverter.convertModelToDto(updatedUser);
+    public ResponseEntity<UserDto> updateUser(@PathVariable int id, @RequestBody UserDto userDto) {
+        try {
+            User updatedUser = userService.updateUser(id, userConverter.convertDtoToModel(userDto));
+            UserDto updatedUserDto = userConverter.convertModelToDto(updatedUser);
+            return ResponseEntity.ok(updatedUserDto);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
-        userService.deleteUserById(id);
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+        try {
+            userService.deleteUserById(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

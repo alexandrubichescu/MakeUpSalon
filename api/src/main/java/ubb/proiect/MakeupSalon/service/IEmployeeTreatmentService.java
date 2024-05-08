@@ -10,4 +10,5 @@ public interface IEmployeeTreatmentService {
     EmployeeTreatment saveEmployeeTreatment(EmployeeTreatment employeeTreatment);
     EmployeeTreatment updateEmployeeTreatment(EmployeeTreatment employeeTreatment);
     void deleteEmployeeTreatmentById(int id);
+
 }
