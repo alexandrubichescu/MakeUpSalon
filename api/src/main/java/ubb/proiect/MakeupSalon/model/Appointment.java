@@ -1,15 +1,21 @@
 package ubb.proiect.MakeupSalon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name = "appointments")
+@JsonIgnoreProperties("appointmentEmployeeTreatments")
 public class Appointment {
 
     @Id
@@ -29,7 +35,7 @@ public class Appointment {
 
     @Column(name = "date_created", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateCreated;
+    private LocalDateTime dateCreated;
 
     @Enumerated(EnumType.STRING)
     @Column(name="approval_status")
@@ -39,6 +45,8 @@ public class Appointment {
     @JoinColumn(name = "approved_by")
     private User employee;
 
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
-    private Set<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
+
 }

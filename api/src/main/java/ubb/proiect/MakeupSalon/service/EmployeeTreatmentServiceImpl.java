@@ -37,4 +37,5 @@ public class EmployeeTreatmentServiceImpl implements IEmployeeTreatmentService{
     public void deleteEmployeeTreatmentById(int id) {
         employeeTreatmentRepository.deleteById(id);
     }
+
 }

@@ -1,13 +1,19 @@
 package ubb.proiect.MakeupSalon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Table(name="treatments")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Treatment {
@@ -27,6 +33,8 @@ public class Treatment {
     @Column(name="picture_url")
     private String pictureURL;
 
-    @OneToMany(mappedBy = "treatment", cascade = CascadeType.ALL)
-    private Set<EmployeeTreatment> employeeTreatments;
+    @OneToMany(mappedBy = "treatment", fetch = FetchType.EAGER)
+    @Builder.Default
+    @JsonIgnore
+    private Set<EmployeeTreatment> employeeTreatments = new HashSet<>();
 }

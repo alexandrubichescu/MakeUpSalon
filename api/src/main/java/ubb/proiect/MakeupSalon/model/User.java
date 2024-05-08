@@ -2,10 +2,7 @@ package ubb.proiect.MakeupSalon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,9 +13,10 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Table(name="users")
 public class User implements UserDetails {
@@ -63,13 +61,16 @@ public class User implements UserDetails {
     private boolean enabled;
 
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<EmployeeTreatment> employeeTreatments;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Appointment> customerAppointments;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
+    @JsonIgnore
     private Set<Appointment> employeeAppointments;
 
     @Override

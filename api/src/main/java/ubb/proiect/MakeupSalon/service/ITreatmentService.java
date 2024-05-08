@@ -10,7 +10,7 @@ public interface ITreatmentService {
     List<Treatment> getAllTreatments();
     Treatment getTreatmentById(int id);
     Treatment saveTreatment(Treatment service);
-    Treatment updateTreatment(Treatment service);
+    Treatment updateTreatment(int id, Treatment treatment);
     void deleteTreatmentById(int id);
 
     Set<User> getUsersByTreatmentId(int id);

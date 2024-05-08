@@ -1,80 +1,86 @@
 package ubb.proiect.MakeupSalon.controller;
 
+import org.springframework.http.ResponseEntity;
+import ubb.proiect.MakeupSalon.converter.AppointmentConverter;
+import ubb.proiect.MakeupSalon.dto.AppointmentDto;
+import ubb.proiect.MakeupSalon.dto.AppointmentRequestDto;
+import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.Appointment;
-import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
-import ubb.proiect.MakeupSalon.model.Status;
-import ubb.proiect.MakeupSalon.model.User;
-import ubb.proiect.MakeupSalon.service.AppointmentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ubb.proiect.MakeupSalon.service.IAppointmentService;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class AppointmentController {
 
     @Autowired
-    private AppointmentServiceImpl appointmentService;
+    private IAppointmentService appointmentService;
+
+    @Autowired
+    private AppointmentConverter appointmentConverter;
+
 
     @GetMapping("/appointments")
-    public List<Appointment> getAllAppointments() {
-        return appointmentService.getAllAppointments();
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
+        try {
+            List<Appointment> appointments = appointmentService.getAllAppointments();
+            List<AppointmentDto> appointmentDtos = appointments.stream()
+                    .map(appointmentConverter::convertModelToDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(appointmentDtos);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/appointments/{id}")
-    public Appointment getAppointmentById(@PathVariable int id) {
-        return appointmentService.getAppointmentById(id);
+    public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable int id) {
+        try {
+            Appointment appointment = appointmentService.getAppointmentById(id);
+            AppointmentDto appointmentDto = appointmentConverter.convertModelToDto(appointment);
+            return ResponseEntity.ok(appointmentDto);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/appointments")
-    public Appointment addAppointment(@RequestBody Appointment appointment) {
-        appointment.setAppointmentID(0);
-        appointment.setApprovalStatus(Status.PENDING);
+    public ResponseEntity<AppointmentDto> addAppointment(@RequestBody AppointmentRequestDto appointmentRequestDto) {
+        try {
+            Appointment savedAppointment = appointmentService.saveAppointment(appointmentRequestDto);
 
-        // establish the endDateTime
-        EmployeeTreatment employeeTreatment =
-                appointment.getAppointmentEmployeeTreatments().iterator().next().getEmployeeTreatment();
-        LocalDateTime startDateTime = appointment.getStartDateTime();
-        int estimatedDuration = employeeTreatment.getTreatment().getEstimatedDuration();
-        LocalDateTime endDateTime = startDateTime.plusMinutes(estimatedDuration);
-        appointment.setEndDateTime(endDateTime);
+            AppointmentDto savedAppointmentDto = appointmentConverter.convertModelToDto(savedAppointment);
 
-        // check if the employee is available for the time interval
-        User employee = appointment.getEmployee();
-        if(appointmentService
-                .hasOverlappingAppointments(employee,appointment.getStartDateTime(),appointment.getEndDateTime())) {
-            throw new RuntimeException("The employee is not available during the specified time interval.");
-        } else {
-            return appointmentService.saveAppointment(appointment);
+            return ResponseEntity.ok(savedAppointmentDto);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/appointments/{id}")
-    public Appointment updateAppointment(@PathVariable int id, @RequestBody Appointment appointment) {
-        appointment.setAppointmentID(id);
+    public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable int id, @RequestBody AppointmentRequestDto appointmentRequestDto) {
+        try {
+            Appointment updatedAppointment = appointmentService.updateAppointment(id, appointmentRequestDto);
 
-        // establish the endDateTime
-        EmployeeTreatment employeeTreatment =
-                appointment.getAppointmentEmployeeTreatments().iterator().next().getEmployeeTreatment();
-        LocalDateTime startDateTime = appointment.getStartDateTime();
-        int estimatedDuration = employeeTreatment.getTreatment().getEstimatedDuration();
-        LocalDateTime endDateTime = startDateTime.plusMinutes(estimatedDuration);
-        appointment.setEndDateTime(endDateTime);
+            AppointmentDto updatedAppointmentDto = appointmentConverter.convertModelToDto(updatedAppointment);
 
-        // check if the employee is available for the time interval
-        User employee = appointment.getEmployee();
-        if(appointmentService
-                .hasOverlappingAppointments(employee,appointment.getStartDateTime(),appointment.getEndDateTime())) {
-            throw new RuntimeException("The employee is not available during the specified time interval.");
-        } else {
-            return appointmentService.updateAppointment(appointment);
+            return ResponseEntity.ok(updatedAppointmentDto);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/appointments/{id}")
-    public void deleteAppointment(@PathVariable int id) {
-        appointmentService.deleteAppointmentById(id);
+    public ResponseEntity<?> deleteAppointment(@PathVariable int id) {
+        try {
+            appointmentService.deleteAppointmentById(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

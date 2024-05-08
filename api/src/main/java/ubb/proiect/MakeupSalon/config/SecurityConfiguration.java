@@ -52,8 +52,8 @@ public class SecurityConfiguration {
                         auth
                                 .requestMatchers("/api/users/register").permitAll()
                                 .requestMatchers("/api/users/login").permitAll()
-//                                .requestMatchers("/api/treatments").permitAll()
-//                                .requestMatchers("/api/appointments").permitAll()
+                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("v3/api-docs/**").permitAll()
                                 .anyRequest()
                                 .authenticated())
                 .httpBasic(Customizer.withDefaults())

@@ -1,10 +1,14 @@
 package ubb.proiect.MakeupSalon.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 @Table(name = "appointment_employee_treatments")
 public class AppointmentEmployeeTreatment {
 
@@ -15,9 +19,9 @@ public class AppointmentEmployeeTreatment {
 
     @ManyToOne
     @JoinColumn(name = "appointment_id")
-    Appointment appointment;
+    private Appointment appointment;
 
     @ManyToOne
     @JoinColumn(name = "employee_treatments_id")
-    EmployeeTreatment employeeTreatment;
+    private EmployeeTreatment employeeTreatment;
 }
