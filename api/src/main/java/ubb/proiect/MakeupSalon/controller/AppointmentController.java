@@ -1,5 +1,11 @@
 package ubb.proiect.MakeupSalon.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import ubb.proiect.MakeupSalon.converter.AppointmentConverter;
 import ubb.proiect.MakeupSalon.dto.AppointmentDto;
@@ -24,7 +30,13 @@ public class AppointmentController {
     private AppointmentConverter appointmentConverter;
 
 
-    @GetMapping("/appointments")
+    @Operation(summary = "Find all Appointments",
+            description = "Retrieves a comprehensive list of appointments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Appointments found"),
+                    @ApiResponse(responseCode = "404", description = "Appointments not found", content = @Content)
+            })
+    @GetMapping(value = "/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
         try {
             List<Appointment> appointments = appointmentService.getAllAppointments();
@@ -37,8 +49,16 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping("/appointments/{id}")
-    public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable int id) {
+    @Operation(summary = "Find Appointment by ID",
+            description = "Retrieves an appointment by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Appointment found"),
+                    @ApiResponse(responseCode = "404", description = "Appointment not found", content = @Content)
+            })
+    @GetMapping(value = "/appointments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable
+                                                             @Parameter(description = "The id of the appointment")
+                                                             int id) {
         try {
             Appointment appointment = appointmentService.getAppointmentById(id);
             AppointmentDto appointmentDto = appointmentConverter.convertModelToDto(appointment);
@@ -48,34 +68,53 @@ public class AppointmentController {
         }
     }
 
-    @PostMapping("/appointments")
+    @Operation(summary = "Create a new Appointment",
+            description = "Creates a new appointment",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Appointment created"),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+            })
+    @PostMapping(value = "/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AppointmentDto> addAppointment(@RequestBody AppointmentRequestDto appointmentRequestDto) {
         try {
             Appointment savedAppointment = appointmentService.saveAppointment(appointmentRequestDto);
-
             AppointmentDto savedAppointmentDto = appointmentConverter.convertModelToDto(savedAppointment);
-
-            return ResponseEntity.ok(savedAppointmentDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAppointmentDto);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("/appointments/{id}")
-    public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable int id, @RequestBody AppointmentRequestDto appointmentRequestDto) {
+    @Operation(summary = "Update Appointment by ID",
+            description = "Update an appointment details by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Appointment found"),
+                    @ApiResponse(responseCode = "404", description = "Appointment not found", content = @Content)
+            })
+    @PutMapping(value = "/appointments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable
+                                                            @Parameter(description = "The id of the appointment")
+                                                            int id,
+                                                            @RequestBody AppointmentRequestDto appointmentRequestDto) {
         try {
             Appointment updatedAppointment = appointmentService.updateAppointment(id, appointmentRequestDto);
-
             AppointmentDto updatedAppointmentDto = appointmentConverter.convertModelToDto(updatedAppointment);
-
             return ResponseEntity.ok(updatedAppointmentDto);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/appointments/{id}")
-    public ResponseEntity<?> deleteAppointment(@PathVariable int id) {
+    @Operation(summary = "Delete Appointment by ID",
+            description = "Deletes an appointment by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Appointment successfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "Appointment not found", content = @Content)
+            })
+    @DeleteMapping(value="/appointments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteAppointment(@PathVariable
+                                               @Parameter(description = "The id of the appointment")
+                                               int id) {
         try {
             appointmentService.deleteAppointmentById(id);
             return ResponseEntity.noContent().build();

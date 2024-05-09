@@ -1,5 +1,11 @@
 package ubb.proiect.MakeupSalon.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import ubb.proiect.MakeupSalon.converter.TreatmentConverter;
 import ubb.proiect.MakeupSalon.converter.UserConverter;
@@ -29,7 +35,13 @@ public class TreatmentController {
     private UserConverter userConverter;
 
 
-    @GetMapping("/treatments")
+    @Operation(summary = "Find all Treatments",
+            description = "Retrieves a comprehensive list of treatments",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Treatments found"),
+                    @ApiResponse(responseCode = "404", description = "Treatments not found", content = @Content)
+            })
+    @GetMapping(value = "/treatments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TreatmentDto>> getAllTreatments() {
         try {
             List<Treatment> treatments = treatmentService.getAllTreatments();
@@ -37,63 +49,102 @@ public class TreatmentController {
                     .map(treatmentConverter::convertModelToDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(treatmentDtos);
-        } catch (DataBaseOperationException e){
+        } catch (DataBaseOperationException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/treatments/{id}")
-    public ResponseEntity<TreatmentDto> getTreatmentById(@PathVariable int id) {
+    @Operation(summary = "Finds a Treatment by ID",
+            description = "Retrieves a single treatment identified by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Treatment found"),
+                    @ApiResponse(responseCode = "404", description = "Treatment not found", content = @Content)
+            })
+    @GetMapping(value = "/treatments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TreatmentDto> getTreatmentById(@PathVariable
+                                                         @Parameter(description = "The id of the treatment")
+                                                         int id) {
         try {
             Treatment treatment = treatmentService.getTreatmentById(id);
             TreatmentDto treatmentDto = treatmentConverter.convertModelToDto(treatment);
             return ResponseEntity.ok(treatmentDto);
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/treatments/{id}/users")
-    public ResponseEntity<Set<UserDto>> getUsersByTreatmentId(@PathVariable int id) {
+    @Operation(summary = "Find the Users(employees) by a Treatment ID",
+            description = "Retrieves a set of users associated with a specific treatment by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Treatment found"),
+                    @ApiResponse(responseCode = "404", description = "Treatment not found", content = @Content)
+            })
+    @GetMapping(value = "/treatments/{id}/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<UserDto>> getUsersByTreatmentId(@PathVariable
+                                                              @Parameter(description = "The id of the treatment")
+                                                              int id) {
         try {
             Set<User> users = treatmentService.getUsersByTreatmentId(id);
             Set<UserDto> userDtos = users.stream()
                     .map(userConverter::convertModelToDto)
                     .collect(Collectors.toSet());
             return ResponseEntity.ok(userDtos);
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/treatments")
+    @Operation(summary = "Create new Treatment",
+            description = "Adds a new treatment",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Treatment created"),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+            })
+    @PostMapping(value = "/treatments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TreatmentDto> addTreatment(@RequestBody Treatment treatment) {
         try {
             Treatment savedTreatment = treatmentService.saveTreatment(treatment);
             TreatmentDto savedTreatmentDto = treatmentConverter.convertModelToDto(savedTreatment);
-            return ResponseEntity.ok(savedTreatmentDto);
-        } catch (DataBaseOperationException e){
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedTreatmentDto);
+        } catch (DataBaseOperationException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("/treatments/{id}")
-    public ResponseEntity<TreatmentDto> updateTreatment(@PathVariable int id, @RequestBody Treatment treatment) {
+    @Operation(summary = "Update Treatment by ID",
+            description = "Updates a treatment’s details",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Treatment found"),
+                    @ApiResponse(responseCode = "404", description = "Treatment not found", content = @Content)
+            })
+    @PutMapping(value = "/treatments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TreatmentDto> updateTreatment(@PathVariable
+                                                        @Parameter(description = "The id of the treatment")
+                                                        int id,
+                                                        @RequestBody Treatment treatment) {
         try {
             Treatment updatedTreatment = treatmentService.updateTreatment(id, treatment);
             TreatmentDto updatedTreatmentDto = treatmentConverter.convertModelToDto(updatedTreatment);
             return ResponseEntity.ok(updatedTreatmentDto);
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/treatments/{id}")
-    public ResponseEntity<?> deleteTreatment(@PathVariable int id) {
+    @Operation(summary = "Delete Treatment by ID",
+            description = "Deletes a treatment identified by its id",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Treatment uccessfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "Treatment not found", content = @Content)
+            })
+    @DeleteMapping(value = "/treatments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteTreatment(@PathVariable
+                                             @Parameter(description = "The id of the treatment")
+                                             int id) {
         try {
             treatmentService.deleteTreatmentById(id);
             return ResponseEntity.noContent().build();
-        } catch (ResourceNotFoundException e){
+        } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
