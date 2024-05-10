@@ -116,13 +116,13 @@ public class UserController {
             description = "Retrieves a comprehensive list of users by their role",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Users found"),
-                    @ApiResponse(responseCode = "404", description = "Users not found", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Conflict", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Users not found", content = @Content)
             })
     @GetMapping(value = "/users/role/{role}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserDto>> getUsersByRole(@PathVariable
                                                         @Parameter(description = "The role of the user")
-                                                        Role role) {
+                                                        String role) {
         try {
             List<User> users = userService.getUsersByRole(role);
             List<UserDto> userDtos = users.stream()
@@ -132,7 +132,7 @@ public class UserController {
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (DataBaseOperationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 

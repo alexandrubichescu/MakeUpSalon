@@ -47,23 +47,23 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public List<User> getUsersByRole(Role role) {
+    public List<User> getUsersByRole(String roleString) {
         log.trace("getUsersByRole() --- method entered");
 
-        Role[] roles = Role.values();
-        List<Role> rolesList = Arrays.asList(roles);
-
-        if(rolesList.contains(role)) {
-            List<User> users = userRepository.findByRole(role);
-            if (users.isEmpty()) {
-                log.error("getUsersByRole() --- users list is empty");
-                throw new ResourceNotFoundException("Users not found");
-            }
-            log.trace("getUsersByRole(): usersSize={}", users.size());
-            return users;
-        } else {
+        Role role;
+        try {
+            role = Role.valueOf(roleString.toUpperCase());
+        } catch (IllegalArgumentException e) {
             throw new DataBaseOperationException("Role is not supported");
         }
+
+        List<User> users = userRepository.findByRole(role);
+        if (users.isEmpty()) {
+            log.error("getUsersByRole() --- users list is empty");
+            throw new ResourceNotFoundException("Users not found");
+        }
+        log.trace("getUsersByRole(): usersSize={}", users.size());
+        return users;
     }
 
     @Override
