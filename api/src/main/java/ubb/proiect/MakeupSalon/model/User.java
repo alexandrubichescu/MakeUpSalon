@@ -7,10 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -26,28 +24,15 @@ public class User implements UserDetails {
     @Column(name="user_id")
     private int userId;
 
-    @Column(name="first_name")
-    private String firstName;
-
-    @Column(name="last_name")
-    private String lastName;
-
     private String email;
     private String password;
-
-    @Column(name="phone_number")
-    private String phoneNumber;
-
-    @Column(name="date_of_birth")
-    private LocalDate dateOfBirth;
-
-    private String address;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name="picture_url")
-    private String pictureURL;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
+    private Person person;
 
     @Column(name="account_non_expired")
     private boolean accountNonExpired;
@@ -59,19 +44,6 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
 
     private boolean enabled;
-
-
-    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private Set<EmployeeTreatment> employeeTreatments;
-
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private Set<Appointment> customerAppointments;
-
-    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private Set<Appointment> employeeAppointments;
 
     @Override
     @JsonIgnore

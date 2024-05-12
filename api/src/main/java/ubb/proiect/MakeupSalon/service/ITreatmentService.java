@@ -1,7 +1,7 @@
 package ubb.proiect.MakeupSalon.service;
 
+import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Treatment;
-import ubb.proiect.MakeupSalon.model.User;
 
 import java.util.List;
 import java.util.Set;
@@ -13,5 +13,5 @@ public interface ITreatmentService {
     Treatment updateTreatment(int id, Treatment treatment);
     void deleteTreatmentById(int id);
 
-    Set<User> getUsersByTreatmentId(int id);
+    Set<Person> getPersonsByTreatmentId(int id);
 }

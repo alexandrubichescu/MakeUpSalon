@@ -22,7 +22,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
     private static final Logger log = LoggerFactory.getLogger(AppointmentServiceImpl.class);
 
     @Autowired
-    private UserRepository userRepository;
+    private PersonRepository personRepository;
 
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -62,7 +62,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
         }
     }
 
-    private boolean isEmployeeAvailable(User employee, LocalDateTime startDateTime, int treatmentId) {
+    private boolean isEmployeeAvailable(Person employee, LocalDateTime startDateTime, int treatmentId) {
         log.trace("isEmployeeAvailable(User employee, LocalDateTime startDateTime, int treatmentId) --- method entered");
         int treatmentDuration = treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration();
         LocalDateTime endDateTime = startDateTime.plusMinutes(treatmentDuration);
@@ -96,9 +96,9 @@ public class AppointmentServiceImpl implements IAppointmentService {
 
     private void updateAppointmentFields(Appointment appointment, AppointmentRequestDto appointmentRequestDto) {
         log.trace("updateAppointmentFields(Appointment appointmentRequestDto) --- method entered");
-        appointment.setCustomer(userRepository.getReferenceById(appointmentRequestDto.getCustomerId()));
+        appointment.setCustomer(personRepository.getReferenceById(appointmentRequestDto.getCustomerId()));
         appointment.setStartDateTime(appointmentRequestDto.getStartDateTime());
-        appointment.setEmployee(userRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));
+        appointment.setEmployee(personRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));
         appointment.setApprovalStatus(appointmentRequestDto.getApprovalStatus());
         int treatmentId = appointmentRequestDto.getTreatmentId();
         appointment.setEndDateTime(appointmentRequestDto.getStartDateTime()
@@ -113,7 +113,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
     public Appointment saveAppointment(AppointmentRequestDto appointmentRequestDto) {
         log.trace("saveAppointment(AppointmentRequestDto appointmentRequestDto) --- method entered");
 
-        User employee = userRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
+        Person employee = personRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
         LocalDateTime startDateTime = appointmentRequestDto.getStartDateTime();
         int treatmentId = appointmentRequestDto.getTreatmentId();
 
@@ -140,14 +140,14 @@ public class AppointmentServiceImpl implements IAppointmentService {
     private Appointment createAppointmentFromRequest(AppointmentRequestDto appointmentRequestDto) {
         log.trace("createAppointmentFromRequest(AppointmentRequestDto appointmentRequestDto) --- method entered");
         Appointment appointment = new Appointment();
-        appointment.setCustomer(userRepository.getReferenceById(appointmentRequestDto.getCustomerId()));
+        appointment.setCustomer(personRepository.getReferenceById(appointmentRequestDto.getCustomerId()));
         appointment.setStartDateTime(appointmentRequestDto.getStartDateTime());
         int treatmentId = appointmentRequestDto.getTreatmentId();
         appointment.setEndDateTime(appointmentRequestDto.getStartDateTime()
                 .plusDays(treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration()));
         appointment.setDateCreated(LocalDateTime.now());
         appointment.setApprovalStatus(Status.PENDING);
-        appointment.setEmployee(userRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));
+        appointment.setEmployee(personRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));
         return appointment;
     }
 
@@ -174,7 +174,7 @@ public class AppointmentServiceImpl implements IAppointmentService {
             throw new ResourceNotFoundException("No Appointment found");
         }
 
-        User employee = userRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
+        Person employee = personRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
         LocalDateTime startDateTime = appointmentRequestDto.getStartDateTime();
         int treatmentId = appointmentRequestDto.getTreatmentId();
 

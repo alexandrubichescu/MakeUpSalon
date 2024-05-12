@@ -25,7 +25,7 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    private User customer;
+    private Person customer;
 
     @Column(name="start_date_time")
     private LocalDateTime startDateTime;
@@ -43,7 +43,7 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "approved_by")
-    private User employee;
+    private Person employee;
 
     @JsonIgnore
     @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
