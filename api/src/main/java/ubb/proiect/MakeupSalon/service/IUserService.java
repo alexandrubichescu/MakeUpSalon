@@ -1,6 +1,5 @@
 package ubb.proiect.MakeupSalon.service;
 
-import ubb.proiect.MakeupSalon.model.Role;
 import ubb.proiect.MakeupSalon.model.Treatment;
 import ubb.proiect.MakeupSalon.model.User;
 
@@ -17,5 +16,5 @@ public interface IUserService {
 
     Optional<User> getUserByEmail(String email);
     Set<Treatment> getTreatmentsByUserId(int id);
-    List<User> getUsersByRole(Role role);
+    List<User> getUsersByRole(String roleString);
 }
