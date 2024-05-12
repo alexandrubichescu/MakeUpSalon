@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ubb.proiect.MakeupSalon.model.AppointmentEmployeeTreatment;
+import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Status;
-import ubb.proiect.MakeupSalon.model.User;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,12 +20,12 @@ import java.util.List;
 @SuperBuilder
 public class AppointmentDto implements Serializable {
     private int appointmentID;
-    private User customer;
+    private Person customer;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private LocalDateTime dateCreated;
     private Status approvalStatus;
-    private User employee;
+    private Person employee;
     private List<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
 
     @Override

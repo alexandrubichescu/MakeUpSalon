@@ -1,9 +1,7 @@
 package ubb.proiect.MakeupSalon.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.MediaType;
 import ubb.proiect.MakeupSalon.exception.UserNotFoundException;
 import ubb.proiect.MakeupSalon.model.*;
 import ubb.proiect.MakeupSalon.repository.UserRepository;

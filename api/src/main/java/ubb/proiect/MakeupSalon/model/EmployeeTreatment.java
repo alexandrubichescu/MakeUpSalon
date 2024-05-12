@@ -18,7 +18,7 @@ public class EmployeeTreatment {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private User employee;
+    private Person employee;
 
     @ManyToOne
     @JoinColumn(name = "treatment_id")

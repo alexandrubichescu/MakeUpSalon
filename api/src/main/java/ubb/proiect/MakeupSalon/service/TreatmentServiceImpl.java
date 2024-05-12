@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ubb.proiect.MakeupSalon.exception.DataBaseOperationException;
 import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
+import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Treatment;
 import ubb.proiect.MakeupSalon.model.User;
 import ubb.proiect.MakeupSalon.repository.TreatmentRepository;
@@ -98,7 +99,7 @@ public class TreatmentServiceImpl implements ITreatmentService {
     }
 
     @Override
-    public Set<User> getUsersByTreatmentId(int id) {
+    public Set<Person> getPersonsByTreatmentId(int id) {
         Optional<Treatment> treatment = treatmentRepository.findById(id);
         if (treatment.isPresent()) {
             return treatment.get().getEmployeeTreatments().stream()
