@@ -15,7 +15,6 @@ public class AppointmentConverter {
                 .dateCreated(appointmentDto.getDateCreated())
                 .approvalStatus(appointmentDto.getApprovalStatus())
                 .employee(appointmentDto.getEmployee())
-                .appointmentEmployeeTreatments(appointmentDto.getAppointmentEmployeeTreatments())
                 .build();
     }
 
@@ -28,7 +27,6 @@ public class AppointmentConverter {
                 .dateCreated(appointment.getDateCreated())
                 .approvalStatus(appointment.getApprovalStatus())
                 .employee(appointment.getEmployee())
-                .appointmentEmployeeTreatments(appointment.getAppointmentEmployeeTreatments())
                 .build();
     }
 }

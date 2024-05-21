@@ -5,13 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ubb.proiect.MakeupSalon.model.AppointmentEmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Status;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +24,6 @@ public class AppointmentDto implements Serializable {
     private LocalDateTime dateCreated;
     private Status approvalStatus;
     private Person employee;
-    private List<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
 
     @Override
     public String toString() {
@@ -38,7 +35,6 @@ public class AppointmentDto implements Serializable {
                 ", dateCreated=" + dateCreated +
                 ", approvalStatus=" + approvalStatus +
                 ", employee=" + employee +
-                ", appointmentEmployeeTreatments=" + appointmentEmployeeTreatments +
                 '}';
     }
 }

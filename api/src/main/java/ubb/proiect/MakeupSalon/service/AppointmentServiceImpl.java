@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,18 +61,33 @@ public class AppointmentServiceImpl implements IAppointmentService {
         }
     }
 
-    private boolean isEmployeeAvailable(Person employee, LocalDateTime startDateTime, int treatmentId) {
-        log.trace("isEmployeeAvailable(User employee, LocalDateTime startDateTime, int treatmentId) --- method entered");
-        int treatmentDuration = treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration();
-        LocalDateTime endDateTime = startDateTime.plusMinutes(treatmentDuration);
+    private boolean isEmployeeNotAvailable(int employeeId, LocalDateTime requestedStartDateTime, int treatmentId) {
+        log.trace("isEmployeeNotAvailable(int employeeId, LocalDateTime requestedStartDateTime, int treatmentId) --- method entered");
 
-        List<Appointment> overlappingAppointments = appointmentRepository.findByEmployeeAndStartDateTimeBetween(
-                employee, startDateTime, endDateTime);
+        int requestedTreatmentDuration = treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration();
+        LocalDateTime requestedEndDateTime = requestedStartDateTime.plusMinutes(requestedTreatmentDuration);
 
-        log.trace("isEmployeeAvailable() --- overlappingAppointments={}", overlappingAppointments);
+        List<Appointment> employeeAppointmentsList = appointmentRepository.findByEmployeeId(employeeId);
 
-        return overlappingAppointments.isEmpty();
+        log.trace("employeeAppointmentsList.size={}", employeeAppointmentsList.size());
+
+        if (employeeAppointmentsList.isEmpty()) {
+            log.trace("employeeAppointmentsList is empty for employeeId={}", employeeId);
+            return false;
+        }
+
+        return employeeAppointmentsList.stream()
+                .anyMatch(appointment -> {
+                    LocalDateTime startDateTime = appointment.getStartDateTime();
+                    LocalDateTime endDateTime = appointment.getEndDateTime();
+                    return (requestedStartDateTime.isBefore(endDateTime) && requestedEndDateTime.isAfter(startDateTime)) ||
+                            (requestedStartDateTime.isEqual(startDateTime) && requestedEndDateTime.isEqual(endDateTime)) ||
+                            (requestedStartDateTime.isBefore(startDateTime) && requestedEndDateTime.isAfter(startDateTime)) ||
+                            (requestedStartDateTime.isBefore(endDateTime) && requestedEndDateTime.isAfter(endDateTime)) ||
+                            (requestedStartDateTime.isAfter(startDateTime) && requestedEndDateTime.isBefore(endDateTime));
+                });
     }
+
 
 
     private boolean isAppointmentValidForUpdate(Appointment appointment, AppointmentRequestDto appointmentRequestDto) {
@@ -102,36 +116,34 @@ public class AppointmentServiceImpl implements IAppointmentService {
         appointment.setApprovalStatus(appointmentRequestDto.getApprovalStatus());
         int treatmentId = appointmentRequestDto.getTreatmentId();
         appointment.setEndDateTime(appointmentRequestDto.getStartDateTime()
-                .plusDays(treatmentRepository.getReferenceById(treatmentId)
+                .plusMinutes(treatmentRepository.getReferenceById(treatmentId)
                         .getEstimatedDuration()));
         log.trace("updateAppointmentFields(appointmentRequestDto) --- appointment={}", appointment);
     }
-
 
     @Override
     @Transactional
     public Appointment saveAppointment(AppointmentRequestDto appointmentRequestDto) {
         log.trace("saveAppointment(AppointmentRequestDto appointmentRequestDto) --- method entered");
 
-        Person employee = personRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
-        LocalDateTime startDateTime = appointmentRequestDto.getStartDateTime();
+        LocalDateTime requestedStartDateTime = appointmentRequestDto.getStartDateTime();
         int treatmentId = appointmentRequestDto.getTreatmentId();
+        int employeeId = appointmentRequestDto.getEmployeeId();
 
-        if (!isEmployeeAvailable(employee, startDateTime, treatmentId)) {
-            log.trace("saveAppointment(AppointmentRequestDto appointmentRequestDto) --- Employee not available at the specified time");
-            throw new IllegalArgumentException("Employee not available at the specified time");
+        if (isEmployeeNotAvailable(employeeId, requestedStartDateTime, treatmentId)) {
+            log.trace("isEmployeeNotAvailable(int employeeId, LocalDateTime requestedStartDateTime, int treatmentId) {}",
+                    isEmployeeNotAvailable(employeeId, requestedStartDateTime, treatmentId));
+            throw new ResourceNotFoundException("Employee not available at the specified time");
         }
 
         Appointment appointment = createAppointmentFromRequest(appointmentRequestDto);
+        log.trace("createAppointment(int appointmentRequestDto) --- appointment={}", appointment);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
+        log.trace("savedAppointment(int appointmentRequestDto) --- savedAppointment={}", savedAppointment);
 
-        AppointmentEmployeeTreatment appointmentEmployeeTreatment
-                = saveAppointmentEmployeeTreatment(savedAppointment, treatmentId);
-        List<AppointmentEmployeeTreatment> appointmentEmployeeTreatmentsList = new ArrayList<>();
-        appointmentEmployeeTreatmentsList.add(appointmentEmployeeTreatment);
-        appointment.setAppointmentEmployeeTreatments(appointmentEmployeeTreatmentsList);
 
+        saveAppointmentEmployeeTreatment(savedAppointment, appointmentRequestDto.getTreatmentId());
         log.trace("saveAppointment(AppointmentRequestDto appointmentRequestDto) --- appointment={}", savedAppointment);
 
         return savedAppointment;
@@ -142,23 +154,29 @@ public class AppointmentServiceImpl implements IAppointmentService {
         Appointment appointment = new Appointment();
         appointment.setCustomer(personRepository.getReferenceById(appointmentRequestDto.getCustomerId()));
         appointment.setStartDateTime(appointmentRequestDto.getStartDateTime());
+
         int treatmentId = appointmentRequestDto.getTreatmentId();
-        appointment.setEndDateTime(appointmentRequestDto.getStartDateTime()
-                .plusDays(treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration()));
+        LocalDateTime endDateTime = appointmentRequestDto.getStartDateTime()
+                .plusMinutes(treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration());
+        appointment.setEndDateTime(endDateTime);
+
         appointment.setDateCreated(LocalDateTime.now());
         appointment.setApprovalStatus(Status.PENDING);
         appointment.setEmployee(personRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));
+
         return appointment;
     }
 
-    private AppointmentEmployeeTreatment saveAppointmentEmployeeTreatment(Appointment appointment, int treatmentId) {
+    private void saveAppointmentEmployeeTreatment(Appointment appointment, int treatmentId) {
         log.trace("saveAppointmentEmployeeTreatment() --- appointment={}", appointment);
         List<EmployeeTreatment> employeeTreatments = employeeTreatmentRepository.findByTreatmentTreatmentID(treatmentId);
         if (!employeeTreatments.isEmpty()) {
+            EmployeeTreatment employeeTreatment = employeeTreatments.get(0);
             AppointmentEmployeeTreatment appointmentEmployeeTreatment = new AppointmentEmployeeTreatment();
             appointmentEmployeeTreatment.setAppointment(appointment);
-            appointmentEmployeeTreatment.setEmployeeTreatment(employeeTreatments.get(0));
-            return appointmentEmployeeTreatmentRepository.save(appointmentEmployeeTreatment);
+            appointmentEmployeeTreatment.setEmployeeTreatment(employeeTreatment);
+
+            appointmentEmployeeTreatmentRepository.save(appointmentEmployeeTreatment);
         } else {
             throw new DataBaseOperationException("EmployeeTreatment not found");
         }
@@ -174,14 +192,14 @@ public class AppointmentServiceImpl implements IAppointmentService {
             throw new ResourceNotFoundException("No Appointment found");
         }
 
-        Person employee = personRepository.getReferenceById(appointmentRequestDto.getEmployeeId());
+        int employeeId = appointmentRequestDto.getEmployeeId();
         LocalDateTime startDateTime = appointmentRequestDto.getStartDateTime();
         int treatmentId = appointmentRequestDto.getTreatmentId();
 
         Appointment appointment = optionalAppointment.get();
         if (!isAppointmentValidForUpdate(appointment, appointmentRequestDto) &&
-                !isEmployeeAvailable(employee, startDateTime, treatmentId)) {
-            throw new IllegalArgumentException("Invalid appointment update request");
+                isEmployeeNotAvailable(employeeId, startDateTime, treatmentId)) {
+            throw new ResourceNotFoundException("Invalid appointment update request");
         }
 
         try {

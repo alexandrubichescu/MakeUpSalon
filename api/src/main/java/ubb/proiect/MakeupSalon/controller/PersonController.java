@@ -17,7 +17,6 @@ import ubb.proiect.MakeupSalon.model.*;
 import ubb.proiect.MakeupSalon.service.IPersonService;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -80,14 +79,14 @@ public class PersonController {
                     @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)
             })
     @GetMapping(value="/persons/id/{id}/treatments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<TreatmentDto>> getTreatmentsByPersonId(@PathVariable
+    public ResponseEntity<List<TreatmentDto>> getTreatmentsByPersonId(@PathVariable
                                                                    @Parameter(description = "The id of the Person")
                                                                    int id) {
         try {
-            Set<Treatment> treatments = personService.getTreatmentsByPersonId(id);
-            Set<TreatmentDto> treatmentDtos = treatments.stream()
+            List<Treatment> treatments = personService.getTreatmentsByPersonId(id);
+            List<TreatmentDto> treatmentDtos = treatments.stream()
                     .map(treatmentConverter::convertModelToDto)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             return ResponseEntity.ok(treatmentDtos);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -106,7 +105,7 @@ public class PersonController {
                                                                  int id) {
         try {
             Person employee = personService.getPersonById(id);
-            Set<Appointment> appointments = employee.getEmployeeAppointments();
+            List<Appointment> appointments = employee.getEmployeeAppointments();
             List<IntervalDto> intervalDtos = appointments.stream()
                     .map(appointment -> new IntervalDto(appointment.getStartDateTime(), appointment.getEndDateTime()))
                     .collect(Collectors.toList());
@@ -123,18 +122,20 @@ public class PersonController {
                     @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)
             })
     @GetMapping(value = "/persons/id/{id}/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<AppointmentDto>> getAppointmentsByPersonId(@PathVariable
+    public ResponseEntity<List<AppointmentDto>> getAppointmentsByPersonId(@PathVariable
                                                                        @Parameter(description = "The id of the Person")
                                                                        int id) {
         try {
             Person customer = personService.getPersonById(id);
-            Set<Appointment> appointments = customer.getEmployeeAppointments();
-            Set<AppointmentDto> appointmentDtos = appointments.stream()
+            List<Appointment> appointments = customer.getEmployeeAppointments();
+            List<AppointmentDto> appointmentDtos = appointments.stream()
                     .map(appointmentConverter::convertModelToDto)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             return ResponseEntity.ok(appointmentDtos);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 }

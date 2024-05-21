@@ -15,9 +15,6 @@ public class PersonConverter {
                 .dateOfBirth(personDto.getDateOfBirth())
                 .address(personDto.getAddress())
                 .pictureURL(personDto.getPictureURL())
-                .employeeTreatments(personDto.getEmployeeTreatments())
-                .customerAppointments(personDto.getCustomerAppointments())
-                .employeeAppointments(personDto.getEmployeeAppointments())
                 .build();
     }
 
@@ -30,9 +27,6 @@ public class PersonConverter {
                 .dateOfBirth(person.getDateOfBirth())
                 .address(person.getAddress())
                 .pictureURL(person.getPictureURL())
-                .employeeTreatments(person.getEmployeeTreatments())
-                .customerAppointments(person.getCustomerAppointments())
-                .employeeAppointments(person.getEmployeeAppointments())
                 .build();
     }
 }

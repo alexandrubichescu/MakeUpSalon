@@ -12,7 +12,6 @@ import ubb.proiect.MakeupSalon.repository.PersonRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,14 +68,14 @@ public class PersonServiceImpl implements IPersonService {
     }
 
     @Override
-    public Set<Treatment> getTreatmentsByPersonId(int id) {
+    public List<Treatment> getTreatmentsByPersonId(int id) {
         log.trace("getTreatmentsByPersonId() --- method entered");
         Optional<Person> employee = personRepository.findById(id);
         if (employee.isPresent()) {
-            Set<EmployeeTreatment> employeeTreatments = employee.get().getEmployeeTreatments();
-            Set<Treatment> treatmentsByEmployee = employeeTreatments.stream()
+            List<EmployeeTreatment> employeeTreatments = employee.get().getEmployeeTreatments();
+            List<Treatment> treatmentsByEmployee = employeeTreatments.stream()
                     .map(EmployeeTreatment::getTreatment)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             log.trace("getTreatmentsByPersonId(): treatmentsSize={}", treatmentsByEmployee.size());
             return treatmentsByEmployee;
         } else {

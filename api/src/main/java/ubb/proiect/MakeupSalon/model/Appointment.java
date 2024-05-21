@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,14 +17,14 @@ import java.util.List;
 @Builder
 @Table(name = "appointments")
 @JsonIgnoreProperties("appointmentEmployeeTreatments")
-public class Appointment {
+public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="appointment_id")
     private int appointmentID;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_id")
     private Person customer;
 
@@ -41,7 +42,7 @@ public class Appointment {
     @Column(name="approval_status")
     private Status approvalStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "approved_by")
     private Person employee;
 

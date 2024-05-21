@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 import ubb.proiect.MakeupSalon.model.Appointment;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
-public class PersonDto {
+public class PersonDto implements Serializable {
     private int personId;
     private String firstName;
     private String lastName;
