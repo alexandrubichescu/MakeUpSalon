@@ -33,7 +33,7 @@ public class AuthUser {
                     @ApiResponse(responseCode = "200", description = "Successfully registered")
             })
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
@@ -43,7 +43,7 @@ public class AuthUser {
                     @ApiResponse(responseCode = "200", description = "Successfully authenticated")
             })
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
@@ -53,9 +53,11 @@ public class AuthUser {
                     @ApiResponse(responseCode = "200", description = "Successfully changed password")
             })
     @PatchMapping("/recover-password/{id}")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, @PathVariable int id){
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, @PathVariable int id) {
         Optional<User> getUser = userJpaRepository.findById(id);
-        if (getUser.isEmpty()) throw new UserNotFoundException("User with id: " + id + " doest not exist!");
+        if (getUser.isEmpty()) {
+            throw new UserNotFoundException("User with id: " + id + " doest not exist!");
+        }
 
         User user = getUser.get();
 
@@ -65,6 +67,6 @@ public class AuthUser {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userJpaRepository.save(user);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok("Password changed successfully");
     }
 }

@@ -48,22 +48,23 @@ public class PersonServiceImpl implements IPersonService {
     }
 
     @Override
-    public Person updatePerson(int id, Person Person) {
+    public Person updatePerson(int id, Person person) {
         log.trace("updatePerson() --- method entered");
-        Optional<Person> optionalPerson = personRepository.findById(Person.getPersonId());
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        log.trace("---------updatePerson(): person = {}", optionalPerson);
         if (optionalPerson.isPresent()) {
             Person personToUpdate = optionalPerson.get();
-            personToUpdate.setFirstName(Person.getFirstName());
-            personToUpdate.setLastName(Person.getLastName());
-            personToUpdate.setPhoneNumber(Person.getPhoneNumber());
-            personToUpdate.setDateOfBirth(Person.getDateOfBirth());
-            personToUpdate.setAddress(Person.getAddress());
-            personToUpdate.setPictureURL(Person.getPictureURL());
+            personToUpdate.setFirstName(person.getFirstName());
+            personToUpdate.setLastName(person.getLastName());
+            personToUpdate.setPhoneNumber(person.getPhoneNumber());
+            personToUpdate.setDateOfBirth(person.getDateOfBirth());
+            personToUpdate.setAddress(person.getAddress());
+            personToUpdate.setPictureURL(person.getPictureURL());
             log.trace("updatePerson(): PersonUpdated = {}", personToUpdate);
             return personRepository.save(personToUpdate);
         } else {
-            log.error("updatePerson(): Person not found");
-            throw new ResourceNotFoundException("Person with ID = " + id + " not found");
+            log.error("updatePerson(): person not found");
+            throw new ResourceNotFoundException("person with ID = " + id + " not found");
         }
     }
 

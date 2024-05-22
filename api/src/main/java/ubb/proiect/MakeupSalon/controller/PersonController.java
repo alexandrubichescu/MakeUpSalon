@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ubb.proiect.MakeupSalon.converter.AppointmentConverter;
-import ubb.proiect.MakeupSalon.converter.PersonConverter;
-import ubb.proiect.MakeupSalon.converter.TreatmentConverter;
+import ubb.proiect.MakeupSalon.converter.*;
 import ubb.proiect.MakeupSalon.dto.*;
 import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.*;
+import ubb.proiect.MakeupSalon.repository.UserRepository;
 import ubb.proiect.MakeupSalon.service.IPersonService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,10 +29,16 @@ public class PersonController {
     private PersonConverter personConverter;
 
     @Autowired
-    private TreatmentConverter treatmentConverter;
+    private AppointmentConverter appointmentConverter;
 
     @Autowired
-    private AppointmentConverter appointmentConverter;
+    private EmployeeTreatmentConverter employeeTreatmentConverter;
+
+    @Autowired
+    private PersonUpdateConverter personUpdateConverter;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Operation(summary = "Find all Persons",
             description = "Retrieves a comprehensive list of Persons",
@@ -40,7 +46,7 @@ public class PersonController {
                     @ApiResponse(responseCode = "200", description = "Persons found"),
                     @ApiResponse(responseCode = "404", description = "Persons not found", content = @Content)
             })
-    @GetMapping(value="/persons", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/persons", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PersonDto>> getAllPersons() {
         try {
             List<Person> persons = personService.getAllPersons();
@@ -59,10 +65,10 @@ public class PersonController {
                     @ApiResponse(responseCode = "200", description = "Person found"),
                     @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)
             })
-    @GetMapping(value="/persons/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/persons/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PersonDto> getPersonById(@PathVariable
-                                               @Parameter(description = "The id of the Person")
-                                               int id) {
+                                                   @Parameter(description = "The id of the Person")
+                                                   int id) {
         try {
             Person person = personService.getPersonById(id);
             PersonDto personDto = personConverter.convertModelToDto(person);
@@ -78,14 +84,14 @@ public class PersonController {
                     @ApiResponse(responseCode = "200", description = "Person found"),
                     @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)
             })
-    @GetMapping(value="/persons/id/{id}/treatments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TreatmentDto>> getTreatmentsByPersonId(@PathVariable
-                                                                   @Parameter(description = "The id of the Person")
-                                                                   int id) {
+    @GetMapping(value = "/persons/id/{id}/treatments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EmployeeTreatmentDto>> getTreatmentsByPersonId(@PathVariable
+                                                                              @Parameter(description = "The id of the Person")
+                                                                              int id) {
         try {
             List<Treatment> treatments = personService.getTreatmentsByPersonId(id);
-            List<TreatmentDto> treatmentDtos = treatments.stream()
-                    .map(treatmentConverter::convertModelToDto)
+            List<EmployeeTreatmentDto> treatmentDtos = treatments.stream()
+                    .map(employeeTreatmentConverter::convertModelToDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(treatmentDtos);
         } catch (ResourceNotFoundException e) {
@@ -123,15 +129,52 @@ public class PersonController {
             })
     @GetMapping(value = "/persons/id/{id}/appointments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AppointmentDto>> getAppointmentsByPersonId(@PathVariable
-                                                                       @Parameter(description = "The id of the Person")
-                                                                       int id) {
+                                                                          @Parameter(description = "The id of the Person")
+                                                                          int id) {
         try {
-            Person customer = personService.getPersonById(id);
-            List<Appointment> appointments = customer.getEmployeeAppointments();
-            List<AppointmentDto> appointmentDtos = appointments.stream()
-                    .map(appointmentConverter::convertModelToDto)
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(appointmentDtos);
+            Person person = personService.getPersonById(id);
+            Optional<User> optionalUser = userRepository.findById(id);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                Role role = user.getRole();
+                if (role == Role.EMPLOYEE) {
+                    List<Appointment> appointments = person.getEmployeeAppointments();
+                    List<AppointmentDto> appointmentDtos = appointments.stream()
+                            .map(appointmentConverter::convertModelToDto)
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(appointmentDtos);
+                } else if (role == Role.CUSTOMER) {
+                    List<Appointment> appointments = person.getCustomerAppointments();
+                    List<AppointmentDto> appointmentDtos = appointments.stream()
+                            .map(appointmentConverter::convertModelToDto)
+                            .collect(Collectors.toList());
+                    return ResponseEntity.ok(appointmentDtos);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Update an existing Person by ID",
+            description = "Update an existing person’s information",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Updated"),
+                    @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)
+            })
+    @PutMapping(value = "/persons/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PersonUpdateDto> updatePerson(@PathVariable
+                                                        @Parameter(description = "The id of the person")
+                                                        int id,
+                                                        @RequestBody PersonUpdateDto personDto) {
+        try {
+            Person updatedPerson = personService.updatePerson(id, personUpdateConverter.convertDtoToModel(personDto));
+            PersonUpdateDto updatedPersonDto = personUpdateConverter.convertModelToDto(updatedPerson);
+            return ResponseEntity.ok(updatedPersonDto);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
