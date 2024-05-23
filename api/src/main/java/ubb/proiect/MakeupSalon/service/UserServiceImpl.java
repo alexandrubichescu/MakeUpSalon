@@ -68,6 +68,19 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        log.trace("getUserByEmail() --- method entered");
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            log.trace("getUserByEmail(): user = {}", user.get());
+            return user.get();
+        } else {
+            log.error("getUserByEmail: user not found");
+            throw new ResourceNotFoundException("User not found");
+        }
+    }
+
+    @Override
     public User updateUser(int id, User user) {
         log.trace("updateUser() --- method entered");
         Optional<User> optionalUser = userRepository.findById(id);

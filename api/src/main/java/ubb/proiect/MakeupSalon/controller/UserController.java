@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -125,6 +126,19 @@ public class UserController {
             userService.deleteUserById(id);
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Find User by email",
+            description = "Retrieves a user(Optional) by their email address")
+    @GetMapping("/users/{email}")
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable @Parameter(description = "The email of the user") String email) {
+        try {
+            User checkUser = userService.getUserByEmail(email);
+            UserDto userDto = userConverter.convertModelToDto(checkUser);
+            return ResponseEntity.ok(userDto);
+        } catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }

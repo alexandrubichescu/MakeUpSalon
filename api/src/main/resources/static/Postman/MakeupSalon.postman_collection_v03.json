@@ -1,0 +1,829 @@
+{
+	"info": {
+		"_postman_id": "9a22e2fb-8d35-44af-ae9e-602773fce7b1",
+		"name": "MakeupSalon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24706515"
+	},
+	"item": [
+		{
+			"name": "POST Create new User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Ginger\",\r\n    \"lastName\": \"Reddison\",\r\n    \"email\": \"Ginger@admin.com\",\r\n    \"password\": \"Ginger\",\r\n    \"phoneNumber\": \"123456789\",\r\n    \"dateOfBirth\": \"1990-01-01\",\r\n    \"address\": \"123 Main Street\",\r\n    \"role\": \"EMPLOYEE\",\r\n    \"pictureURL\": \"https://example.com/Ginger.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users/register",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"register"
+					]
+				},
+				"description": "Create a new User"
+			},
+			"response": []
+		},
+		{
+			"name": "POST User Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mihai@admin.com\",\r\n    \"password\": \"MIHAI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users/login",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"login"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH Change Password",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"newPassword\": \"MIHAI\",\r\n    \"confirmationPassword\": \"MIHAI\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users/recover-password/1",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"recover-password",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET User By Email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/users/mihai@admin.com",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"mihai@admin.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET All Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/users",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET User By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/users/id/30",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"id",
+						"30"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Treatments By User Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/9/treatments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"9",
+						"treatments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users By Role",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/users/role/CUSTOMER",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"role",
+						"CUSTOMER"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Employee Unavailable Times",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/2/unavailable",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"2",
+						"unavailable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update User By Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 11,\r\n    \"firstName\": \"Kim\",\r\n    \"lastName\": \"Thomason\",\r\n    \"phoneNumber\": \"123456789\",\r\n    \"dateOfBirth\": \"1990-01-01\",\r\n    \"address\": \"123 Main Street\",\r\n    \"role\": \"EMPLOYEE\",\r\n    \"pictureURL\": \"https://example.com/profile.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/users/11",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE User By Id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/users/14",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"users",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET All Treatments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/treatments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Treatment By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/treatments/10",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users By Treatment By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_URL}}/treatments/1/persons",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments",
+						"1",
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Add New Treatment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Semi-Permanent Makeup\",\r\n    \"description\": \"Simplify your daily routine with makeup that stays put, enhancing features like brows and lips\",\r\n    \"estimatedDuration\": 30,\r\n    \"price\": 18.75,\r\n    \"pictureURL\": \"https://example.com/BridalMakeupPackage.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/treatments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Treatment By Id (Update)",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"X\",\r\n    \"description\": \"X\",\r\n    \"estimatedDuration\": 30,\r\n    \"price\": 12.75,\r\n    \"pictureURL\": \"https://example.com/FlawlessFoundation.jpg\",\r\n    \"employeeTreatments\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/treatments/1",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Treatment By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/treatments/11",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"treatments",
+						"11"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET All Appointments",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": 17,\r\n  \"startDateTime\": \"2024-07-17T19:00:00\",\r\n  \"employeeId\": 7,\r\n  \"treatmentId\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/appointments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Appointment By Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/appointments/20",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"appointments",
+						"20"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Add new Appointment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": 3,\r\n  \"startDateTime\": \"2035-02-25T14:30:00\",\r\n  \"employeeId\": 4,\r\n  \"treatmentId\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/appointments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Appointment By Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"customerId\": 3,\r\n  \"startDateTime\": \"2035-02-25T14:30:00\",\r\n  \"approvalStatus\": \"APPROVED\",\r\n  \"employeeId\": 4,\r\n  \"treatmentId\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/appointments/20",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"appointments",
+						"20"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Appointment By Id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/appointments/21",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"appointments",
+						"21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET All Persons",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/persons",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Person By Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/5",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Treatments By Person Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/4/treatments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"4",
+						"treatments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Unavailable Times By Person Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/4/unavailable",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"4",
+						"unavailable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Appointments By Person Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ADMIN_TOKEN}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{API_URL}}/persons/id/4/appointments",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"4",
+						"appointments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Person By Id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"firstName\": \"Mihai\",\r\n        \"lastName\": \"Suciu\",\r\n        \"phoneNumber\": \"123456789\",\r\n        \"dateOfBirth\": \"1980-01-01\",\r\n        \"address\": \"123 Main Street\",\r\n        \"pictureURL\": \"https://example.com/mihai.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/persons/id/1",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"persons",
+						"id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
