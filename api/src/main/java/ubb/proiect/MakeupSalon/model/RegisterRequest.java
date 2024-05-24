@@ -19,6 +19,6 @@ public class RegisterRequest {
     private String phoneNumber;
     private LocalDate dateOfBirth;
     private String address;
-    private Role role;
+//    private Role role;
     private String pictureURL;
 }
