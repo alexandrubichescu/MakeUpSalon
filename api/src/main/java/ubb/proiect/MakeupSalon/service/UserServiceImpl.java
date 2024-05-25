@@ -68,6 +68,19 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        log.trace("getUserByEmail() --- method entered");
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            log.trace("getUserByEmail(): user = {}", user.get());
+            return user.get();
+        } else {
+            log.error("getUserByEmail: user not found");
+            throw new ResourceNotFoundException("User not found");
+        }
+    }
+
+    @Override
     public User updateUser(int id, User user) {
         log.trace("updateUser() --- method entered");
         Optional<User> optionalUser = userRepository.findById(id);
@@ -79,14 +92,17 @@ public class UserServiceImpl implements IUserService {
             userToUpdate.setCredentialsNonExpired(true);
             userToUpdate.setEnabled(user.isEnabled());
 
-            Person personToUpdate = user.getPerson();
-            personToUpdate.setFirstName(user.getPerson().getFirstName());
-            personToUpdate.setLastName(user.getPerson().getLastName());
-            personToUpdate.setPhoneNumber(user.getPerson().getPhoneNumber());
-            personToUpdate.setDateOfBirth(user.getPerson().getDateOfBirth());
-            personToUpdate.setAddress(user.getPerson().getAddress());
-            personToUpdate.setPictureURL(user.getPerson().getPictureURL());
-            personService.updatePerson(personToUpdate.getPersonId(), personToUpdate);
+            if (userToUpdate.getPerson() != null && user.getPerson() != null) {
+                Person personToUpdate = user.getPerson();
+                setFieldsOnPerson(personToUpdate, user);
+                Person updatedPerson = personService.updatePerson(personToUpdate.getPersonId(), personToUpdate);
+                userToUpdate.setPerson(updatedPerson);
+            } else if(user.getPerson() != null) {
+                Person personToSave = new Person();
+                setFieldsOnPerson(personToSave, user);
+                Person personSaved = personService.savePerson(personToSave);
+                user.setPerson(personSaved);
+            }
 
             log.trace("updateUser(): userUpdated = {}", userToUpdate);
             return userRepository.save(userToUpdate);
@@ -94,6 +110,15 @@ public class UserServiceImpl implements IUserService {
             log.error("updateUser(): user not found");
             throw new ResourceNotFoundException("User with ID = " + id + " not found");
         }
+    }
+
+    private void setFieldsOnPerson(Person person, User user){
+        person.setFirstName(user.getPerson().getFirstName());
+        person.setLastName(user.getPerson().getLastName());
+        person.setPhoneNumber(user.getPerson().getPhoneNumber());
+        person.setDateOfBirth(user.getPerson().getDateOfBirth());
+        person.setAddress(user.getPerson().getAddress());
+        person.setPictureURL(user.getPerson().getPictureURL());
     }
 
     @Override

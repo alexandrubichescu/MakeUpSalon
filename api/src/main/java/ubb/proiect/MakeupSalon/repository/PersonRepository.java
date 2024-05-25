@@ -5,9 +5,9 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 import ubb.proiect.MakeupSalon.model.Person;
 
+
 public interface PersonRepository extends JpaRepository<Person, Integer>,
         QueryByExampleExecutor<Person>,
         PagingAndSortingRepository<Person, Integer> {
-
 
 }

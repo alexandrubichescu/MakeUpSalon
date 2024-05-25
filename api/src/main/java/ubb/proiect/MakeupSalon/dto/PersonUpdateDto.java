@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @SuperBuilder
-public class PersonDto implements Serializable {
+public class PersonUpdateDto implements Serializable {
     private int personId;
     private String firstName;
     private String lastName;
@@ -25,10 +25,6 @@ public class PersonDto implements Serializable {
     private LocalDate dateOfBirth;
     private String address;
     private String pictureURL;
-//    private PublicUserDto publicUserDto;
-    private Set<EmployeeTreatment> employeeTreatments;
-    private Set<Appointment> customerAppointments;
-    private Set<Appointment> employeeAppointments;
 
     @Override
     public String toString() {
@@ -40,10 +36,6 @@ public class PersonDto implements Serializable {
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
                 ", pictureURL='" + pictureURL + '\'' +
-//                ", userDto=" + publicUserDto +
-                ", employeeTreatments=" + employeeTreatments +
-                ", customerAppointments=" + customerAppointments +
-                ", employeeAppointments=" + employeeAppointments +
                 '}';
     }
 }

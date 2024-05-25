@@ -2,7 +2,6 @@ package ubb.proiect.MakeupSalon.converter;
 
 import org.springframework.stereotype.Component;
 import ubb.proiect.MakeupSalon.dto.PublicUserDto;
-import ubb.proiect.MakeupSalon.dto.UserDto;
 import ubb.proiect.MakeupSalon.model.User;
 
 @Component

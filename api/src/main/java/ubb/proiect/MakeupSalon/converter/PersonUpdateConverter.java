@@ -2,11 +2,12 @@ package ubb.proiect.MakeupSalon.converter;
 
 import org.springframework.stereotype.Component;
 import ubb.proiect.MakeupSalon.dto.PersonDto;
+import ubb.proiect.MakeupSalon.dto.PersonUpdateDto;
 import ubb.proiect.MakeupSalon.model.Person;
 
 @Component
-public class PersonConverter {
-    public Person convertDtoToModel(PersonDto personDto) {
+public class PersonUpdateConverter {
+    public Person convertDtoToModel(PersonUpdateDto personDto) {
         return Person.builder()
                 .personId(personDto.getPersonId())
                 .firstName(personDto.getFirstName())
@@ -18,8 +19,8 @@ public class PersonConverter {
                 .build();
     }
 
-    public PersonDto convertModelToDto(Person person) {
-        return PersonDto.builder()
+    public PersonUpdateDto convertModelToDto(Person person) {
+        return PersonUpdateDto.builder()
                 .personId(person.getPersonId())
                 .firstName(person.getFirstName())
                 .lastName(person.getLastName())

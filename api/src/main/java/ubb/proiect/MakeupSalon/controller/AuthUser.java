@@ -33,7 +33,7 @@ public class AuthUser {
                     @ApiResponse(responseCode = "200", description = "Successfully registered")
             })
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(service.register(request));
     }
 
@@ -43,19 +43,44 @@ public class AuthUser {
                     @ApiResponse(responseCode = "200", description = "Successfully authenticated")
             })
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+//    @Operation(summary = "Password recovery",
+//            description = "Change password for an existing user",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Successfully changed password")
+//            })
+//    @PatchMapping("/recover-password/{id}")
+//    public ResponseEntity<?> changePasswordById(@RequestBody ChangePasswordRequest request, @PathVariable int id) {
+//        Optional<User> getUser = userJpaRepository.findById(id);
+//        if (getUser.isEmpty()) {
+//            throw new UserNotFoundException("User with id: " + id + " doest not exist!");
+//        }
+//
+//        User user = getUser.get();
+//
+//        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+//            throw new IllegalStateException("Passwords are not the same");
+//        }
+//        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+//        userJpaRepository.save(user);
+//
+//        return ResponseEntity.ok(user);
+//    }
 
     @Operation(summary = "Password recovery",
             description = "Change password for an existing user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully changed password")
             })
-    @PatchMapping("/recover-password/{id}")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, @PathVariable int id){
-        Optional<User> getUser = userJpaRepository.findById(id);
-        if (getUser.isEmpty()) throw new UserNotFoundException("User with id: " + id + " doest not exist!");
+    @PatchMapping("/recover-password/{email}")
+    public ResponseEntity<?> changePasswordByEmail(@RequestBody ChangePasswordRequest request, @PathVariable String email) {
+        Optional<User> getUser = userJpaRepository.findByEmail(email);
+        if (getUser.isEmpty()) {
+            throw new UserNotFoundException("User with email: " + email + " doest not exist!");
+        }
 
         User user = getUser.get();
 

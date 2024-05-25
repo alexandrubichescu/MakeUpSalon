@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,13 +44,13 @@ public class Person {
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<EmployeeTreatment> employeeTreatments;
+    private List<EmployeeTreatment> employeeTreatments;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Appointment> customerAppointments;
+    private List<Appointment> customerAppointments;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Appointment> employeeAppointments;
+    private List<Appointment> employeeAppointments;
 }

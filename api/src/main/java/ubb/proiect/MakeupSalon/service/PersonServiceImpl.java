@@ -3,7 +3,9 @@ package ubb.proiect.MakeupSalon.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ubb.proiect.MakeupSalon.exception.DataBaseOperationException;
 import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Treatment;
@@ -12,7 +14,6 @@ import ubb.proiect.MakeupSalon.repository.PersonRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,34 +50,48 @@ public class PersonServiceImpl implements IPersonService {
     }
 
     @Override
-    public Person updatePerson(int id, Person Person) {
-        log.trace("updatePerson() --- method entered");
-        Optional<Person> optionalPerson = personRepository.findById(Person.getPersonId());
-        if (optionalPerson.isPresent()) {
-            Person personToUpdate = optionalPerson.get();
-            personToUpdate.setFirstName(Person.getFirstName());
-            personToUpdate.setLastName(Person.getLastName());
-            personToUpdate.setPhoneNumber(Person.getPhoneNumber());
-            personToUpdate.setDateOfBirth(Person.getDateOfBirth());
-            personToUpdate.setAddress(Person.getAddress());
-            personToUpdate.setPictureURL(Person.getPictureURL());
-            log.trace("updatePerson(): PersonUpdated = {}", personToUpdate);
-            return personRepository.save(personToUpdate);
-        } else {
-            log.error("updatePerson(): Person not found");
-            throw new ResourceNotFoundException("Person with ID = " + id + " not found");
+    public Person savePerson(Person person) {
+        log.trace("savePerson() --- method entered");
+        try{
+            Person savedPerson = personRepository.save(person);
+            log.trace("savedPerson(): savedPerson={}", savedPerson);
+            return savedPerson;
+        } catch (DataIntegrityViolationException e){
+            log.error("Error while saving treatment: {}", e.getMessage());
+            throw new DataBaseOperationException("Error while saving treatment: " + e.getMessage());
         }
     }
 
     @Override
-    public Set<Treatment> getTreatmentsByPersonId(int id) {
+    public Person updatePerson(int id, Person person) {
+        log.trace("updatePerson() --- method entered");
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        log.trace("---------updatePerson(): person = {}", optionalPerson);
+        if (optionalPerson.isPresent()) {
+            Person personToUpdate = optionalPerson.get();
+            personToUpdate.setFirstName(person.getFirstName());
+            personToUpdate.setLastName(person.getLastName());
+            personToUpdate.setPhoneNumber(person.getPhoneNumber());
+            personToUpdate.setDateOfBirth(person.getDateOfBirth());
+            personToUpdate.setAddress(person.getAddress());
+            personToUpdate.setPictureURL(person.getPictureURL());
+            log.trace("updatePerson(): PersonUpdated = {}", personToUpdate);
+            return personRepository.save(personToUpdate);
+        } else {
+            log.error("updatePerson(): person not found");
+            throw new ResourceNotFoundException("person with ID = " + id + " not found");
+        }
+    }
+
+    @Override
+    public List<Treatment> getTreatmentsByPersonId(int id) {
         log.trace("getTreatmentsByPersonId() --- method entered");
         Optional<Person> employee = personRepository.findById(id);
         if (employee.isPresent()) {
-            Set<EmployeeTreatment> employeeTreatments = employee.get().getEmployeeTreatments();
-            Set<Treatment> treatmentsByEmployee = employeeTreatments.stream()
+            List<EmployeeTreatment> employeeTreatments = employee.get().getEmployeeTreatments();
+            List<Treatment> treatmentsByEmployee = employeeTreatments.stream()
                     .map(EmployeeTreatment::getTreatment)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             log.trace("getTreatmentsByPersonId(): treatmentsSize={}", treatmentsByEmployee.size());
             return treatmentsByEmployee;
         } else {

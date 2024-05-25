@@ -128,4 +128,17 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Operation(summary = "Find User by email",
+            description = "Retrieves a user(Optional) by their email address")
+    @GetMapping("/users/{email}")
+    public ResponseEntity<UserDto> getUserByEmail(@PathVariable @Parameter(description = "The email of the user") String email) {
+        try {
+            User checkUser = userService.getUserByEmail(email);
+            UserDto userDto = userConverter.convertModelToDto(checkUser);
+            return ResponseEntity.ok(userDto);
+        } catch (ResourceNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

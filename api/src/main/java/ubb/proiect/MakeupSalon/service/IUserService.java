@@ -11,4 +11,5 @@ public interface IUserService {
     void deleteUserById(int id);
 
     List<User> getUsersByRole(String roleString);
+    User getUserByEmail(String email);
 }

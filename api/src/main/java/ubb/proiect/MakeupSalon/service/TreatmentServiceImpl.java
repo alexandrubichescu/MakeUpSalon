@@ -9,7 +9,6 @@ import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Treatment;
-import ubb.proiect.MakeupSalon.model.User;
 import ubb.proiect.MakeupSalon.repository.TreatmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
