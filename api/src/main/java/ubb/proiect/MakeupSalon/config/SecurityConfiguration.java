@@ -50,9 +50,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) ->
                         auth
+                                .requestMatchers("/api/users/recover-password/*").permitAll()
                                 .requestMatchers("/api/users/register").permitAll()
                                 .requestMatchers("/api/users/login").permitAll()
-                                .requestMatchers("/api/**").permitAll()
+//                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("v3/api-docs/**").permitAll()
                                 .anyRequest()
                                 .authenticated())
