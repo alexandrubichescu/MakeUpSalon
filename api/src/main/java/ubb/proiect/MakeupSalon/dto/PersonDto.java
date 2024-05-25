@@ -25,7 +25,7 @@ public class PersonDto implements Serializable {
     private LocalDate dateOfBirth;
     private String address;
     private String pictureURL;
-    private PublicUserDto publicUserDto;
+//    private PublicUserDto publicUserDto;
     private Set<EmployeeTreatment> employeeTreatments;
     private Set<Appointment> customerAppointments;
     private Set<Appointment> employeeAppointments;
@@ -40,7 +40,7 @@ public class PersonDto implements Serializable {
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
                 ", pictureURL='" + pictureURL + '\'' +
-                ", userDto=" + publicUserDto +
+//                ", userDto=" + publicUserDto +
                 ", employeeTreatments=" + employeeTreatments +
                 ", customerAppointments=" + customerAppointments +
                 ", employeeAppointments=" + employeeAppointments +

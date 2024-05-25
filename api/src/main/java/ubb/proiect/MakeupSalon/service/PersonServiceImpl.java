@@ -3,7 +3,9 @@ package ubb.proiect.MakeupSalon.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ubb.proiect.MakeupSalon.exception.DataBaseOperationException;
 import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Treatment;
@@ -44,6 +46,19 @@ public class PersonServiceImpl implements IPersonService {
         } else {
             log.error("getPersonById: Person not found");
             throw new ResourceNotFoundException("Person with ID = " + id + " not found");
+        }
+    }
+
+    @Override
+    public Person savePerson(Person person) {
+        log.trace("savePerson() --- method entered");
+        try{
+            Person savedPerson = personRepository.save(person);
+            log.trace("savedPerson(): savedPerson={}", savedPerson);
+            return savedPerson;
+        } catch (DataIntegrityViolationException e){
+            log.error("Error while saving treatment: {}", e.getMessage());
+            throw new DataBaseOperationException("Error while saving treatment: " + e.getMessage());
         }
     }
 
