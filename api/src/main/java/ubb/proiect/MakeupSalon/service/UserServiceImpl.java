@@ -73,9 +73,6 @@ public class UserServiceImpl implements IUserService {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             log.trace("getUserByEmail(): user = {}", userOptional.get());
-            User user = userOptional.get();
-            Person person = user.getPerson();
-            log.trace("getUserByEmail(): person = {}", person);
             return userOptional.get();
         } else {
             log.error("getUserByEmail: user not found");

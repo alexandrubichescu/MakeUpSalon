@@ -52,7 +52,7 @@ public class AuthUser {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully changed password")
             })
-    @PatchMapping("/recover-password/{id}")
+    @PatchMapping("/recover-password/id/{id}")
     public ResponseEntity<?> changePasswordById(@RequestBody ChangePasswordRequest request, @PathVariable int id) {
         Optional<User> getUser = userJpaRepository.findById(id);
         if (getUser.isEmpty()) {
@@ -70,26 +70,26 @@ public class AuthUser {
         return ResponseEntity.ok(user);
     }
 
-//    @Operation(summary = "Password recovery",
-//            description = "Change password for an existing user",
-//            responses = {
-//                    @ApiResponse(responseCode = "200", description = "Successfully changed password")
-//            })
-//    @PatchMapping("/recover-password/{email}")
-//    public ResponseEntity<?> changePasswordByEmail(@RequestBody ChangePasswordRequest request, @PathVariable String email) {
-//        Optional<User> getUser = userJpaRepository.findByEmail(email);
-//        if (getUser.isEmpty()) {
-//            throw new UserNotFoundException("User with email: " + email + " doest not exist!");
-//        }
-//
-//        User user = getUser.get();
-//
-//        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-//            throw new IllegalStateException("Passwords are not the same");
-//        }
-//        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//        userJpaRepository.save(user);
-//
-//        return ResponseEntity.ok(user);
-//    }
+    @Operation(summary = "Password recovery",
+            description = "Change password for an existing user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully changed password")
+            })
+    @PatchMapping("/recover-password/email/{email}")
+    public ResponseEntity<?> changePasswordByEmail(@RequestBody ChangePasswordRequest request, @PathVariable String email) {
+        Optional<User> getUser = userJpaRepository.findByEmail(email);
+        if (getUser.isEmpty()) {
+            throw new UserNotFoundException("User with email: " + email + " doest not exist!");
+        }
+
+        User user = getUser.get();
+
+        if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
+            throw new IllegalStateException("Passwords are not the same");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userJpaRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
 }
