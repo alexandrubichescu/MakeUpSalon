@@ -85,7 +85,7 @@ public class AuthUser {
         User user = getUser.get();
 
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-            throw new IllegalStateException("Passwords are not the same");
+            throw new IllegalStateException("Passwords are not the same!");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userJpaRepository.save(user);
