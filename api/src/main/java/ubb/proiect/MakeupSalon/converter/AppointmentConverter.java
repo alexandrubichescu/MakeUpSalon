@@ -9,6 +9,7 @@ public class AppointmentConverter {
     public Appointment convertDtoToModel(AppointmentDto appointmentDto) {
         return Appointment.builder()
                 .appointmentID(appointmentDto.getAppointmentID())
+                .treatmentID(appointmentDto.getTreatmentID())
                 .customer(appointmentDto.getCustomer())
                 .startDateTime(appointmentDto.getStartDateTime())
                 .endDateTime(appointmentDto.getEndDateTime())
@@ -21,6 +22,7 @@ public class AppointmentConverter {
     public AppointmentDto convertModelToDto(Appointment appointment) {
         return AppointmentDto.builder()
                 .appointmentID(appointment.getAppointmentID())
+                .treatmentID(appointment.getTreatmentID())
                 .customer(appointment.getCustomer())
                 .startDateTime(appointment.getStartDateTime())
                 .endDateTime(appointment.getEndDateTime())

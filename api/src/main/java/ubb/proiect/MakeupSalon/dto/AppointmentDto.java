@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class AppointmentDto implements Serializable {
     private int appointmentID;
+    private int treatmentID;
     private Person customer;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
@@ -29,6 +30,7 @@ public class AppointmentDto implements Serializable {
     public String toString() {
         return "AppointmentDto{" +
                 "appointmentID=" + appointmentID +
+                ", treatmentID=" + treatmentID +
                 ", customer=" + customer +
                 ", startDateTime=" + startDateTime +
                 ", endDateTime=" + endDateTime +

@@ -160,6 +160,8 @@ public class AppointmentServiceImpl implements IAppointmentService {
                 .plusMinutes(treatmentRepository.getReferenceById(treatmentId).getEstimatedDuration());
         appointment.setEndDateTime(endDateTime);
 
+        appointment.setTreatmentID(appointmentRequestDto.getTreatmentId());
+
         appointment.setDateCreated(LocalDateTime.now());
         appointment.setApprovalStatus(Status.PENDING);
         appointment.setEmployee(personRepository.getReferenceById(appointmentRequestDto.getEmployeeId()));

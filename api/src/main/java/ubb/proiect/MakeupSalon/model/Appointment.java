@@ -24,6 +24,9 @@ public class Appointment implements Serializable {
     @Column(name="appointment_id")
     private int appointmentID;
 
+    @Column(name="treatment_id")
+    private int treatmentID;
+
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_id")
     private Person customer;
