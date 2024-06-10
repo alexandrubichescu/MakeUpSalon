@@ -19,7 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
         ),
         externalDocs = @ExternalDocumentation(
                 description = "API Repository",
-                url = "https://github.com/alexandrubichescu/MakeUpSalon/tree/main"
+                url = "https://github.com/MihaiS-git/MakeUpSalon.git"
         )
 )
 @SpringBootApplication

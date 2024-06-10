@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.security.Key;
 import java.util.Date;
@@ -59,12 +60,20 @@ public class JwtService {
      * @return The generated JWT token.
      */
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
-        return Jwts
-                .builder()
+        String userRole = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse(null);
+
+        // Add the role to the extraClaims map
+        extraClaims.put("role", userRole);
+
+        // Generate the JWT token with extraClaims
+        return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 120))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

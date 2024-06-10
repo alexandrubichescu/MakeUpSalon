@@ -1,5 +1,6 @@
 package ubb.proiect.MakeupSalon.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import ubb.proiect.MakeupSalon.model.Status;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,26 +19,29 @@ import java.time.LocalDateTime;
 @Setter
 @SuperBuilder
 public class AppointmentDto implements Serializable {
-    private int appointmentID;
-    private int treatmentID;
-    private Person customer;
+    private int appointmentId;
+    private int customerId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateCreated;
     private Status approvalStatus;
-    private Person employee;
+    private int employeeId;
+    private Integer treatmentId;
 
     @Override
     public String toString() {
         return "AppointmentDto{" +
-                "appointmentID=" + appointmentID +
-                ", treatmentID=" + treatmentID +
-                ", customer=" + customer +
+                "appointmentId=" + appointmentId +
+                ", customerId=" + customerId +
                 ", startDateTime=" + startDateTime +
                 ", endDateTime=" + endDateTime +
                 ", dateCreated=" + dateCreated +
                 ", approvalStatus=" + approvalStatus +
-                ", employee=" + employee +
+                ", employeeId=" + employeeId +
+                ", treatmentsList=" + treatmentId +
                 '}';
     }
 }

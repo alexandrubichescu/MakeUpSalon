@@ -3,13 +3,15 @@ package ubb.proiect.MakeupSalon.converter;
 import org.springframework.stereotype.Component;
 import ubb.proiect.MakeupSalon.dto.UserDto;
 import ubb.proiect.MakeupSalon.model.User;
+import ubb.proiect.MakeupSalon.service.IPersonService;
 
 @Component
 public class UserConverter {
-    private final PersonConverter personConverter;
 
-    public UserConverter(PersonConverter personConverter) {
-        this.personConverter = personConverter;
+    private final IPersonService personService;
+
+    public UserConverter(IPersonService personService) {
+        this.personService = personService;
     }
 
     public User convertDtoToModel(UserDto userDto) {
@@ -18,7 +20,7 @@ public class UserConverter {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .role(userDto.getRole())
-                .person(personConverter.convertDtoToModel(userDto.getPersonDto()))
+                .person(personService.getPersonById(userDto.getPersonId()))
                 .accountNonExpired(userDto.isAccountNonExpired())
                 .accountNonLocked(userDto.isAccountNonLocked())
                 .credentialsNonExpired(userDto.isCredentialsNonExpired())
@@ -32,7 +34,7 @@ public class UserConverter {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .role(user.getRole())
-                .personDto(personConverter.convertModelToDto(user.getPerson()))
+                .personId(user.getPerson().getPersonId())
                 .accountNonExpired(user.isAccountNonExpired())
                 .accountNonLocked(user.isAccountNonLocked())
                 .credentialsNonExpired(user.isCredentialsNonExpired())

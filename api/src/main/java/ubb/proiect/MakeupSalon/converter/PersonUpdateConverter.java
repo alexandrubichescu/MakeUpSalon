@@ -1,7 +1,6 @@
 package ubb.proiect.MakeupSalon.converter;
 
 import org.springframework.stereotype.Component;
-import ubb.proiect.MakeupSalon.dto.PersonDto;
 import ubb.proiect.MakeupSalon.dto.PersonUpdateDto;
 import ubb.proiect.MakeupSalon.model.Person;
 
@@ -15,7 +14,7 @@ public class PersonUpdateConverter {
                 .phoneNumber(personDto.getPhoneNumber())
                 .dateOfBirth(personDto.getDateOfBirth())
                 .address(personDto.getAddress())
-                .pictureURL(personDto.getPictureURL())
+                .pictureUrl(personDto.getPictureUrl())
                 .build();
     }
 
@@ -27,7 +26,7 @@ public class PersonUpdateConverter {
                 .phoneNumber(person.getPhoneNumber())
                 .dateOfBirth(person.getDateOfBirth())
                 .address(person.getAddress())
-                .pictureURL(person.getPictureURL())
+                .pictureUrl(person.getPictureUrl())
                 .build();
     }
 }

@@ -21,10 +21,42 @@ out
 generated
 MANIFEST.MF
 
-#gradle
-#gradle
-.gradle
-
 #angular
 node_modules
+.angular
+rentals-web/src/main/webapp/.angular
+
+
+# Angular CLI generated files
+/dist
+/.ng
+/.vscode
+/*.js
+/*.js.map
+*.esm5
+*.esm2015
+*.closure
+*.closure.js
+*.closure.js.map
+*.ngfactory.ts
+*.ngstyle.ts
+
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# other files
+credentials.json
+myapp.log
+*.gz
+StoredCredential
+
 

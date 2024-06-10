@@ -14,22 +14,22 @@ import java.io.Serializable;
 @Setter
 @SuperBuilder
 public class EmployeeTreatmentDto implements Serializable {
-    private int treatmentID;
+    private int treatmentId;
     private String name;
     private String description;
     private int estimatedDuration;
     private double price;
-    private String pictureURL;
+    private String pictureUrl;
 
     @Override
     public String toString() {
         return "TreatmentDto{" +
-                "treatmentID=" + treatmentID +
+                "treatmentID=" + treatmentId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", estimatedDuration=" + estimatedDuration +
                 ", price=" + price +
-                ", pictureURL='" + pictureURL + '\'' +
+                ", pictureURL='" + pictureUrl + '\'' +
                 '}';
     }
 }

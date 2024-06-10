@@ -19,7 +19,7 @@ public class UserDto implements Serializable {
     private String email;
     private String password;
     private Role role;
-    private PersonDto personDto;
+    private int personId;
     private boolean accountNonExpired;
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
@@ -32,7 +32,7 @@ public class UserDto implements Serializable {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
-                ", personDto=" + personDto +
+                ", personDto=" + personId +
                 ", accountNonExpired=" + accountNonExpired +
                 ", accountNonLocked=" + accountNonLocked +
                 ", credentialsNonExpired=" + credentialsNonExpired +

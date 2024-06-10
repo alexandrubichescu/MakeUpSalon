@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,15 +52,21 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/users/recover-password/**").permitAll()
                                 .requestMatchers("/api/users/register").permitAll()
                                 .requestMatchers("/api/users/login").permitAll()
-//                                .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/api/**").permitAll()
                                 .requestMatchers("v3/api-docs/**").permitAll()
-//                                .requestMatchers("/api/users/**").authenticated()
-//                                .requestMatchers("/api/persons/**").authenticated()
-//                                .requestMatchers("/api/treatments/**").authenticated()
+//                                .requestMatchers("/api/auth/**").permitAll()
+//                                .requestMatchers("/api/users/**").permitAll()
+//                                .requestMatchers("/api/treatments").permitAll()
+//                                .requestMatchers("/api/persons").permitAll()
+//                                .requestMatchers("/api/persons/**").hasAnyRole("ADMIN", "EMPLOYEE", "CUSTOMER")
+//                                .requestMatchers("/api/treatments/**").hasAnyRole("ADMIN", "EMPLOYEE", "CUSTOMER")
+//                                .requestMatchers("/api/appointments/**").hasAnyRole("ADMIN", "EMPLOYEE", "CUSTOMER")
 //                                .requestMatchers("/api/appointments/**").authenticated()
                                 .anyRequest()
                                 .authenticated())
-                .httpBasic(Customizer.withDefaults())
+//                .httpBasic(Customizer.withDefaults())
+                .httpBasic(httpBasic -> httpBasic
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers

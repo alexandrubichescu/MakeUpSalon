@@ -1,5 +1,7 @@
 package ubb.proiect.MakeupSalon.repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -11,6 +13,8 @@ public interface EmployeeTreatmentRepository extends JpaRepository<EmployeeTreat
         QueryByExampleExecutor<EmployeeTreatment>,
         PagingAndSortingRepository<EmployeeTreatment, Integer> {
 
-    List<EmployeeTreatment> findByTreatmentTreatmentID(int treatmentID);
+    List<EmployeeTreatment> findByTreatmentTreatmentId(int treatmentId);
+    List<EmployeeTreatment> findByEmployeePersonId(int employeeId);
+
 
 }

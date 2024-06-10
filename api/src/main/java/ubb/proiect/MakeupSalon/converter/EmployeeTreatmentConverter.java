@@ -8,23 +8,23 @@ import ubb.proiect.MakeupSalon.model.Treatment;
 public class EmployeeTreatmentConverter {
     public Treatment convertDtoToModel(EmployeeTreatmentDto treatmentDto) {
         return Treatment.builder()
-                .treatmentID(treatmentDto.getTreatmentID())
+                .treatmentId(treatmentDto.getTreatmentId())
                 .name(treatmentDto.getName())
                 .description(treatmentDto.getDescription())
                 .estimatedDuration(treatmentDto.getEstimatedDuration())
                 .price(treatmentDto.getPrice())
-                .pictureURL(treatmentDto.getPictureURL())
+                .pictureUrl(treatmentDto.getPictureUrl())
                 .build();
     }
 
     public EmployeeTreatmentDto convertModelToDto(Treatment treatment) {
         return EmployeeTreatmentDto.builder()
-                .treatmentID(treatment.getTreatmentID())
+                .treatmentId(treatment.getTreatmentId())
                 .name(treatment.getName())
                 .description(treatment.getDescription())
                 .estimatedDuration(treatment.getEstimatedDuration())
                 .price(treatment.getPrice())
-                .pictureURL(treatment.getPictureURL())
+                .pictureUrl(treatment.getPictureUrl())
                 .build();
     }
 }

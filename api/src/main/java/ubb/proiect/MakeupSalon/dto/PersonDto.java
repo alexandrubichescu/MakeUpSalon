@@ -1,16 +1,15 @@
 package ubb.proiect.MakeupSalon.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ubb.proiect.MakeupSalon.model.Appointment;
-import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,13 +21,14 @@ public class PersonDto implements Serializable {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     private String address;
-    private String pictureURL;
-//    private PublicUserDto publicUserDto;
-    private Set<EmployeeTreatment> employeeTreatments;
-    private Set<Appointment> customerAppointments;
-    private Set<Appointment> employeeAppointments;
+    private String pictureUrl;
+    private int userId;
+    private List<Integer> treatmentIds;
+    private List<Integer> customerAppointmentIds;
+    private List<Integer> employeeAppointmentIds;
 
     @Override
     public String toString() {
@@ -39,11 +39,11 @@ public class PersonDto implements Serializable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
-                ", pictureURL='" + pictureURL + '\'' +
-//                ", userDto=" + publicUserDto +
-                ", employeeTreatments=" + employeeTreatments +
-                ", customerAppointments=" + customerAppointments +
-                ", employeeAppointments=" + employeeAppointments +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", userId=" + userId +
+                ", treatmentIds=" + treatmentIds +
+                ", customerAppointmentIds=" + customerAppointmentIds +
+                ", employeeAppointmentIds=" + employeeAppointmentIds +
                 '}';
     }
 }

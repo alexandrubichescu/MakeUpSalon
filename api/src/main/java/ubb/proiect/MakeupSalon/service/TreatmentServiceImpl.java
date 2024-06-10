@@ -9,6 +9,7 @@ import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Person;
 import ubb.proiect.MakeupSalon.model.Treatment;
+import ubb.proiect.MakeupSalon.repository.EmployeeTreatmentRepository;
 import ubb.proiect.MakeupSalon.repository.TreatmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,10 +42,10 @@ public class TreatmentServiceImpl implements ITreatmentService {
     @Override
     public Treatment getTreatmentById(int id) {
         log.trace("getTreatmentById() --- method entered");
-        Optional<Treatment> treatment = treatmentRepository.findById(id);
-        if (treatment.isPresent()) {
-            log.trace("getTreatmentById(): treatment={}", treatment.get());
-            return treatment.get();
+        Optional<Treatment> treatmentOptional = treatmentRepository.findById(id);
+        if (treatmentOptional.isPresent()) {
+            Treatment treatment = treatmentOptional.get();
+            return treatment;
         } else {
             log.error("getTreatmentById(): treatment={} not found", id);
             throw new ResourceNotFoundException("getTreatmentById(): treatment={} not found");
@@ -74,7 +75,7 @@ public class TreatmentServiceImpl implements ITreatmentService {
             updatedTreatment.setDescription(treatment.getDescription());
             updatedTreatment.setEstimatedDuration(treatment.getEstimatedDuration());
             updatedTreatment.setPrice(treatment.getPrice());
-            updatedTreatment.setPictureURL(treatment.getPictureURL());
+            updatedTreatment.setPictureUrl(treatment.getPictureUrl());
 
             log.trace("updateTreatment(): updatedTreatment={}", updatedTreatment);
             return treatmentRepository.save(updatedTreatment);

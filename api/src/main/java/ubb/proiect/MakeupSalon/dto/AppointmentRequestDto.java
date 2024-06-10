@@ -1,5 +1,6 @@
 package ubb.proiect.MakeupSalon.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ubb.proiect.MakeupSalon.model.Status;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AppointmentRequestDto implements Serializable {
     private int customerId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startDateTime;
     @Builder.Default
     private Status approvalStatus = Status.PENDING;
@@ -24,6 +26,7 @@ public class AppointmentRequestDto implements Serializable {
         return "AppointmentRequestDto{" +
                 "customerId=" + customerId +
                 ", startDateTime=" + startDateTime +
+                ", approvalStatus=" + approvalStatus +
                 ", employeeId=" + employeeId +
                 ", treatmentId=" + treatmentId +
                 '}';

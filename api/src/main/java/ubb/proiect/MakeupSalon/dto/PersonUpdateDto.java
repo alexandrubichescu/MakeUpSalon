@@ -5,12 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ubb.proiect.MakeupSalon.model.Appointment;
-import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +21,7 @@ public class PersonUpdateDto implements Serializable {
     private String phoneNumber;
     private LocalDate dateOfBirth;
     private String address;
-    private String pictureURL;
+    private String pictureUrl;
 
     @Override
     public String toString() {
@@ -35,7 +32,7 @@ public class PersonUpdateDto implements Serializable {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
-                ", pictureURL='" + pictureURL + '\'' +
+                ", pictureURL='" + pictureUrl + '\'' +
                 '}';
     }
 }

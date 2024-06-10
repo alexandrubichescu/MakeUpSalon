@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class Treatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="treatment_id")
-    private int treatmentID;
+    private int treatmentId;
 
     private String name;
     private String description;
@@ -31,10 +31,10 @@ public class Treatment {
     private double price;
 
     @Column(name="picture_url")
-    private String pictureURL;
+    private String pictureUrl;
 
     @OneToMany(mappedBy = "treatment", fetch = FetchType.EAGER)
     @Builder.Default
     @JsonIgnore
-    private Set<EmployeeTreatment> employeeTreatments = new HashSet<>();
+    private List<EmployeeTreatment> employeeTreatments = new ArrayList<>();
 }

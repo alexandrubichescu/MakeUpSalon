@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class AppointmentController {
-
     private static final Logger log = LoggerFactory.getLogger(AppointmentController.class);
+
     @Autowired
     private IAppointmentService appointmentService;
 

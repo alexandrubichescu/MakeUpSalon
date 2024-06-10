@@ -10,6 +10,7 @@ import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.model.Treatment;
 import ubb.proiect.MakeupSalon.model.Person;
+import ubb.proiect.MakeupSalon.repository.EmployeeTreatmentRepository;
 import ubb.proiect.MakeupSalon.repository.PersonRepository;
 
 import java.util.List;
@@ -23,16 +24,17 @@ public class PersonServiceImpl implements IPersonService {
     @Autowired
     private PersonRepository personRepository;
 
+
     @Override
     public List<Person> getAllPersons() {
         log.trace("getAllPersons() --- method entered");
-        List<Person> Persons = personRepository.findAll();
-        if (Persons.isEmpty()) {
-            log.error("getAllPersons() --- Persons list is empty");
-            throw new ResourceNotFoundException("Persons not found");
+        List<Person> persons = personRepository.findAll();
+        if (persons.isEmpty()) {
+            log.error("getAllPersons() --- persons list is empty");
+            throw new ResourceNotFoundException("persons not found");
         }
-        log.trace("getAllPersons(): PersonsSize={}", Persons.size());
-        return Persons;
+        log.trace("getAllPersons(): PersonsSize={}", persons.size());
+        return persons;
     }
 
     @Override
@@ -40,9 +42,9 @@ public class PersonServiceImpl implements IPersonService {
         log.trace("getPersonById() --- method entered");
         Optional<Person> optionalPerson = personRepository.findById(id);
         if (optionalPerson.isPresent()) {
-            Person Person = optionalPerson.get();
-            log.trace("getPersonById: Person = {}", Person);
-            return Person;
+            Person person = optionalPerson.get();
+            log.trace("getPersonById: person = {}", person);
+            return person;
         } else {
             log.error("getPersonById: Person not found");
             throw new ResourceNotFoundException("Person with ID = " + id + " not found");
@@ -52,11 +54,11 @@ public class PersonServiceImpl implements IPersonService {
     @Override
     public Person savePerson(Person person) {
         log.trace("savePerson() --- method entered");
-        try{
+        try {
             Person savedPerson = personRepository.save(person);
             log.trace("savedPerson(): savedPerson={}", savedPerson);
             return savedPerson;
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             log.error("Error while saving treatment: {}", e.getMessage());
             throw new DataBaseOperationException("Error while saving treatment: " + e.getMessage());
         }
@@ -74,7 +76,7 @@ public class PersonServiceImpl implements IPersonService {
             personToUpdate.setPhoneNumber(person.getPhoneNumber());
             personToUpdate.setDateOfBirth(person.getDateOfBirth());
             personToUpdate.setAddress(person.getAddress());
-            personToUpdate.setPictureURL(person.getPictureURL());
+            personToUpdate.setPictureUrl(person.getPictureUrl());
             log.trace("updatePerson(): PersonUpdated = {}", personToUpdate);
             return personRepository.save(personToUpdate);
         } else {

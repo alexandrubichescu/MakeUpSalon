@@ -37,8 +37,9 @@ public class AuthenticationService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .phoneNumber(request.getPhoneNumber())
+                .dateOfBirth(request.getDateOfBirth())
                 .address(request.getAddress())
-                .pictureURL(request.getPictureURL())
+                .pictureUrl(request.getPictureURL())
                 .build();
         Person savedPerson = personRepository.save(person);
 

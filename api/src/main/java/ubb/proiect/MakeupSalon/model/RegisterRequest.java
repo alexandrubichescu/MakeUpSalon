@@ -1,5 +1,6 @@
 package ubb.proiect.MakeupSalon.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +18,9 @@ public class RegisterRequest {
     private String email;
     private String password;
     private String phoneNumber;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     private String address;
-//    private Role role;
+    private Role role;
     private String pictureURL;
 }

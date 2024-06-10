@@ -2,12 +2,12 @@ package ubb.proiect.MakeupSalon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -22,13 +22,11 @@ public class Appointment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="appointment_id")
-    private int appointmentID;
-
-    @Column(name="treatment_id")
-    private int treatmentID;
+    private int appointmentId;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id",  referencedColumnName = "person_id")
+    @JsonIgnore
     private Person customer;
 
     @Column(name="start_date_time")
@@ -46,11 +44,23 @@ public class Appointment implements Serializable {
     private Status approvalStatus;
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "approved_by")
+    @JoinColumn(name = "approved_by", referencedColumnName = "person_id")
+    @JsonIgnore
     private Person employee;
 
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "treatment_id")
     @JsonIgnore
-    @OneToMany(mappedBy = "appointment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<AppointmentEmployeeTreatment> appointmentEmployeeTreatments;
+    private Treatment treatment;
+
+    @JsonProperty("customer_id")
+    public Integer getCustomerId() {
+        return customer != null ? customer.getPersonId() : null;
+    }
+
+    @JsonProperty("employee_id")
+    public Integer getEmployeeId() {
+        return employee != null ? employee.getPersonId() : null;
+    }
 
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ubb.proiect.MakeupSalon.exception.DataBaseOperationException;
 import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.*;
+import ubb.proiect.MakeupSalon.repository.PersonRepository;
 import ubb.proiect.MakeupSalon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements IUserService {
     public User getUserById(int id) {
         log.trace("getUserById() --- method entered");
         Optional<User> optionalUser = userRepository.findById(id);
+        log.trace("getUserById() --- userId={}", id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             log.trace("getUserById: user = {}", user);
@@ -97,7 +99,7 @@ public class UserServiceImpl implements IUserService {
                 setFieldsOnPerson(personToUpdate, user);
                 Person updatedPerson = personService.updatePerson(personToUpdate.getPersonId(), personToUpdate);
                 userToUpdate.setPerson(updatedPerson);
-            } else if(user.getPerson() != null) {
+            } else if (user.getPerson() != null) {
                 Person personToSave = new Person();
                 setFieldsOnPerson(personToSave, user);
                 Person personSaved = personService.savePerson(personToSave);
@@ -112,13 +114,13 @@ public class UserServiceImpl implements IUserService {
         }
     }
 
-    private void setFieldsOnPerson(Person person, User user){
+    private void setFieldsOnPerson(Person person, User user) {
         person.setFirstName(user.getPerson().getFirstName());
         person.setLastName(user.getPerson().getLastName());
         person.setPhoneNumber(user.getPerson().getPhoneNumber());
         person.setDateOfBirth(user.getPerson().getDateOfBirth());
         person.setAddress(user.getPerson().getAddress());
-        person.setPictureURL(user.getPerson().getPictureURL());
+        person.setPictureUrl(user.getPerson().getPictureUrl());
     }
 
     @Override
@@ -126,6 +128,28 @@ public class UserServiceImpl implements IUserService {
         log.trace("deleteUserById() --- method entered");
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Person person = user.getPerson();
+
+            List<Appointment> employeeAppointments = person.getEmployeeAppointments();
+            if (employeeAppointments != null) {
+                employeeAppointments.forEach(appointment -> appointment.setEmployee(null));
+            }
+
+            List<Appointment> customerAppointments = person.getCustomerAppointments();
+            if (customerAppointments != null) {
+                customerAppointments.forEach(appointment -> appointment.setCustomer(null));
+            }
+
+            List<EmployeeTreatment> treatments = person.getEmployeeTreatments();
+            if (treatments != null) {
+                treatments.forEach(treatment -> treatment.setEmployee(null));
+            }
+
+            person.setEmployeeTreatments(null);
+            person.setCustomerAppointments(null);
+            person.setEmployeeAppointments(null);
+
             userRepository.deleteById(id);
             log.trace("deleteUserById(): userRemoved = {}", optionalUser.get());
         } else {
@@ -133,5 +157,4 @@ public class UserServiceImpl implements IUserService {
             throw new ResourceNotFoundException("User with ID = " + id + " not found");
         }
     }
-
 }
