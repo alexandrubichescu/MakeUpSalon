@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @SuperBuilder
 public class TreatmentDto implements Serializable {
-    private int treatmentId;
+    private int treatmentID;
     private String name;
     private String description;
     private int estimatedDuration;
@@ -26,7 +26,7 @@ public class TreatmentDto implements Serializable {
     @Override
     public String toString() {
         return "TreatmentDto{" +
-                "treatmentID=" + treatmentId +
+                "treatmentID=" + treatmentID +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", estimatedDuration=" + estimatedDuration +

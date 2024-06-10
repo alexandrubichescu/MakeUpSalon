@@ -39,7 +39,7 @@ public class AppointmentConverter {
                 .dateCreated(appointment.getDateCreated())
                 .approvalStatus(appointment.getApprovalStatus())
                 .employeeId(appointment.getEmployeeId())
-                .treatmentId(appointment.getTreatment().getTreatmentId())
+                .treatmentId(appointment.getTreatment().getTreatmentID())
                 .build();
     }
 }

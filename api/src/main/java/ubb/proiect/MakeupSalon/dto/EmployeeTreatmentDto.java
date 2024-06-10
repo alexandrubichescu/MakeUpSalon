@@ -1,5 +1,6 @@
 package ubb.proiect.MakeupSalon.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,11 @@ import java.io.Serializable;
 @Setter
 @SuperBuilder
 public class EmployeeTreatmentDto implements Serializable {
-    private int treatmentId;
+    @JsonIgnore
+    private int employeeTreatmentsId;
+
+    private int treatmentID;
+    private int employeeID;
     private String name;
     private String description;
     private int estimatedDuration;
@@ -23,8 +28,10 @@ public class EmployeeTreatmentDto implements Serializable {
 
     @Override
     public String toString() {
-        return "TreatmentDto{" +
-                "treatmentID=" + treatmentId +
+        return "EmployeeTreatmentDto{" +
+                "employeeTreatmentsId=" + employeeTreatmentsId +
+                "treatmentID=" + treatmentID +
+                ", employeeID=" + employeeID +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", estimatedDuration=" + estimatedDuration +

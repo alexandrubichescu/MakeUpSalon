@@ -13,7 +13,7 @@ public interface EmployeeTreatmentRepository extends JpaRepository<EmployeeTreat
         QueryByExampleExecutor<EmployeeTreatment>,
         PagingAndSortingRepository<EmployeeTreatment, Integer> {
 
-    List<EmployeeTreatment> findByTreatmentTreatmentId(int treatmentId);
+    List<EmployeeTreatment> findByTreatmentTreatmentID(int treatmentID);
     List<EmployeeTreatment> findByEmployeePersonId(int employeeId);
 
 

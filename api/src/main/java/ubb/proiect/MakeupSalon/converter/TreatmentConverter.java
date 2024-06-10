@@ -22,7 +22,7 @@ public class TreatmentConverter {
                 .collect(Collectors.toList());
 
         return Treatment.builder()
-                .treatmentId(treatmentDto.getTreatmentId())
+                .treatmentID(treatmentDto.getTreatmentID())
                 .name(treatmentDto.getName())
                 .description(treatmentDto.getDescription())
                 .estimatedDuration(treatmentDto.getEstimatedDuration())
@@ -34,11 +34,11 @@ public class TreatmentConverter {
 
     public TreatmentDto convertModelToDto(Treatment treatment) {
         List<Integer> employeeIds = treatment.getEmployeeTreatments().stream()
-                .map(employeeTreatment -> employeeTreatment.getEmployeeTreatmentsId())
+                .map(employeeTreatment -> employeeTreatment.getEmployee().getPersonId())
                 .collect(Collectors.toList());
 
         return TreatmentDto.builder()
-                .treatmentId(treatment.getTreatmentId())
+                .treatmentID(treatment.getTreatmentID())
                 .name(treatment.getName())
                 .description(treatment.getDescription())
                 .estimatedDuration(treatment.getEstimatedDuration())

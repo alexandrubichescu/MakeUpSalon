@@ -21,7 +21,7 @@ public class Treatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="treatment_id")
-    private int treatmentId;
+    private int treatmentID;
 
     private String name;
     private String description;

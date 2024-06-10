@@ -91,7 +91,7 @@ public class PersonController {
         try {
             List<Treatment> treatments = personService.getTreatmentsByPersonId(id);
             List<EmployeeTreatmentDto> treatmentDtos = treatments.stream()
-                    .map(employeeTreatmentConverter::convertModelToDto)
+                    .map(employeeTreatmentConverter::convertTreatmentToDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(treatmentDtos);
         } catch (ResourceNotFoundException e) {
