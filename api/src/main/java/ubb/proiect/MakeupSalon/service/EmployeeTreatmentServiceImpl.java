@@ -1,5 +1,6 @@
 package ubb.proiect.MakeupSalon.service;
 
+import ubb.proiect.MakeupSalon.exception.ResourceNotFoundException;
 import ubb.proiect.MakeupSalon.model.EmployeeTreatment;
 import ubb.proiect.MakeupSalon.repository.EmployeeTreatmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;

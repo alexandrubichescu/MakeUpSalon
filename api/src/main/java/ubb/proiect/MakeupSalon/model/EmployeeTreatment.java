@@ -15,7 +15,7 @@ public class EmployeeTreatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="employee_treatments_id")
-    @JsonIgnore
+//    @JsonIgnore
     private int employeeTreatmentsId;
 
     @ManyToOne

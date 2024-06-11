@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 @SuperBuilder
 public class EmployeeTreatmentDto implements Serializable {
-    @JsonIgnore
+//    @JsonIgnore
     private int employeeTreatmentsId;
 
     private int treatmentID;
