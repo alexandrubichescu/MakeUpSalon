@@ -33,6 +33,9 @@ public class AppointmentDto implements Serializable {
     private String treatmentName;
     private String treatmentDescription;
     private double treatmentPrice;
+    private String customerFirstName;
+    private String customerLastName;
+
 
 //    @Override
 //    public String toString() {
@@ -44,9 +47,13 @@ public class AppointmentDto implements Serializable {
 //                ", dateCreated=" + dateCreated +
 //                ", approvalStatus=" + approvalStatus +
 //                ", employeeId=" + employeeId +
-//                ", treatmentsList=" + treatmentId +
+//                ", treatmentId=" + treatmentId +
+//                ", treatmentName='" + treatmentName + '\'' +
+//                ", treatmentDescription='" + treatmentDescription + '\'' +
+//                ", treatmentPrice=" + treatmentPrice +
 //                '}';
 //    }
+
 
     @Override
     public String toString() {
@@ -62,6 +69,8 @@ public class AppointmentDto implements Serializable {
                 ", treatmentName='" + treatmentName + '\'' +
                 ", treatmentDescription='" + treatmentDescription + '\'' +
                 ", treatmentPrice=" + treatmentPrice +
+                ", customerFirstName='" + customerFirstName + '\'' +
+                ", customerLastName='" + customerLastName + '\'' +
                 '}';
     }
 }

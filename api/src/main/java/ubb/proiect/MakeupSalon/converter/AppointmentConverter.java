@@ -34,6 +34,8 @@ public class AppointmentConverter {
         return AppointmentDto.builder()
                 .appointmentId(appointment.getAppointmentId())
                 .customerId(appointment.getCustomerId())
+                .customerFirstName(appointment.getCustomer().getFirstName())
+                .customerLastName(appointment.getCustomer().getLastName())
                 .treatmentName(appointment.getTreatment().getName())
                 .treatmentDescription(appointment.getTreatment().getDescription())
                 .treatmentPrice(appointment.getTreatment().getPrice())
