@@ -36,25 +36,6 @@ public class AppointmentDto implements Serializable {
     private String customerFirstName;
     private String customerLastName;
 
-
-//    @Override
-//    public String toString() {
-//        return "AppointmentDto{" +
-//                "appointmentId=" + appointmentId +
-//                ", customerId=" + customerId +
-//                ", startDateTime=" + startDateTime +
-//                ", endDateTime=" + endDateTime +
-//                ", dateCreated=" + dateCreated +
-//                ", approvalStatus=" + approvalStatus +
-//                ", employeeId=" + employeeId +
-//                ", treatmentId=" + treatmentId +
-//                ", treatmentName='" + treatmentName + '\'' +
-//                ", treatmentDescription='" + treatmentDescription + '\'' +
-//                ", treatmentPrice=" + treatmentPrice +
-//                '}';
-//    }
-
-
     @Override
     public String toString() {
         return "AppointmentDto{" +
